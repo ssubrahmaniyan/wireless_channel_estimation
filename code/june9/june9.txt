@@ -1,0 +1,13 @@
+Jun 09 2024:
+
+Task: Generating correlated random vectors as a matrix X given the ensemble average vector and the autocovariance matrix.
+
+Source: https://www.sciencedirect.com/science/article/pii/S0266892017302539?ref=pdf_download&fr=RR-2&rr=887b3613691f936b
+
+Overview: The task is to find a matrix say of (K, N) dimension, which is essentially K stochastic vectors each containing N points and thus corresponding to a random process. This was performed by two methods.
+
+First was to create two independent uniform U(0, 1) variables using say Box-Muller transform and the making a new random variable using a correlation value rho.
+
+The second method employing finding matrices A, B such that X = A + BY is the required random vector, and Y is a random matrix consisting of K independent random vectors. The implies that the mean vector for Y is zero, and its covariance matrix is the identity.
+
+Using this fact, taking the ensemble average shows that A is the mean vector of the required matrix X. Using mathematical methods such as the cholesky decomposition, the vector B can be found. The attached paper shows another method which has been implemented in the python script.
