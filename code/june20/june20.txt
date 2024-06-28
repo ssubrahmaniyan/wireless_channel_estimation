@@ -1,0 +1,12 @@
+Aim: To extend the correlated random process generation in the previous task to a streaming generation where 1 sample is generated in every random process. Also extend the generation to finally output a signal whose spectrum is similar to the Jakes spectrum.
+
+References: Simulation of Comms textbook
+
+Ideation: In the previous task, the random process vector was generated as X = A + B@Y where A was the mean vector, B the matrix formed by cholesky decomposing the covariance(spatial) matrix of the vector components. Now suppose A is a matrix of the form kx1, B is of the form kxk and Y is of the form kxN. Now B@Y is of the from kxN(k rows, each with N entries). Now broadcasting A(converting an Nx1 matrix into an kxN matrix(k rows, each of which is a copy of the kx1 row, which is effectively added to every corresponding element in B@Y). This will result finally in a matrix X of the form kxN.
+
+Now suppose we choose a new column vector of the from kx1 for Y'. This implies that B@Y will be of the form kx1, to which the unbroadcasted array A can be added to make a new entry X'. This can be considered to be the new sample of the random process generated at the given instance. This can be done continually when the covariance matrix is known and will give us the streaming generator. This is what is implemented in stream_gen.py with some informative plots.
+
+Problems:
+1. The arma generator used takes some parameters and generates an arma gaussian process. How do we choose those parameters now? Can we infer that from pilot signals as well? This is a very serious pitfall because currently I am only choosing the spatial correlation and the temporal correlation is not handled effectively. The text states finding the arma coefficients for a given temporal correlation is hard. So how?
+
+2. I think to convert this to the jakes spectrum, it will be sufficient to use the spectral decomposition method to find the fourier transform of the filter by taking the square root of the required PSD, inverting it and convolving it with the signal. I am not sure if it is working as expected, and also it is very very slow(maybe make the filter noncausal if possible). This is done in stream_gen_jakes.py
