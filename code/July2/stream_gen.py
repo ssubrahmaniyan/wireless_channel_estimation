@@ -107,9 +107,11 @@ def update(frame):
     return lines_100 + cross_corr_lines + pdf_lines
 
 def compute_cross_correlation(x, y):
+    x = (x - np.mean(x))/np.std(x)
+    y = (y - np.mean(y))/np.std(y)
     correlation = correlate(x, y, mode='full')
     lags = np.arange(-len(x) + 1, len(x))
-    correlation = correlation / (np.std(x) * np.std(y) * len(x)) # Cross correlation averaging fixed here. The convention adopted is that the normalized cross correlation is the correlation divided by product fo standard deviations and the length of the vectors.
+    correlation = correlation / (len(x)) # Cross correlation averaging fixed here. The convention adopted is that the normalized cross correlation is the correlation divided by product fo standard deviations and the length of the vectors.
     return lags, correlation
 
 ani = FuncAnimation(fig, update, frames=np.arange(0, float(100)), init_func=init, blit=True, interval=100)
