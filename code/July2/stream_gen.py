@@ -58,7 +58,7 @@ cross_corr_lines = [axs[1].plot([], [], label=f'Cross-correlation between Compon
                     for i in range(K) for j in range(i+1, K)]
 axs[1].set_xlim(-N + 1, N - 1)
 axs[1].set_ylim(-1, 1)
-axs[1].set_title('Cross-correlations')
+axs[1].set_title('Normalized cross-correlations(cross correlation coefficient)')
 axs[1].legend()
 
 # Lines for the PDF plots
