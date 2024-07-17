@@ -19,9 +19,22 @@ def generate_positive_definite_matrix(k):
     return A
 
 def jakes_psd(f, fc, fd):
-    mask = np.abs(f - fc) <= fd
+    # Initialize the PSD array
     psd = np.zeros_like(f)
+
+    # Create a mask for frequencies within the Doppler spread
+    mask = np.abs(f - fc) <= fd
+
+    # Calculate PSD for the frequencies within the mask
     psd[mask] = 1 / (np.pi * fd * np.sqrt(1 - ((f[mask] - fc) / fd) ** 2))
+
+    # Also apply to the negative frequency counterpart
+    negative_mask = np.abs(f + fc) <= fd
+    psd[negative_mask] = 1 / (np.pi * fd * np.sqrt(1 - ((f[negative_mask] + fc) / fd) ** 2))
+
+    # Handle potential division by zero (resulting in NaNs)
+    psd[np.isnan(psd)] = 0
+
     return psd
 
 # Initialize ARMA processes for each component of Y
