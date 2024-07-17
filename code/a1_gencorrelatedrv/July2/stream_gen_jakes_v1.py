@@ -5,7 +5,8 @@ from sympy import Matrix
 from statsmodels.tsa.arima_process import ArmaProcess
 from scipy.signal import correlate, convolve
 from scipy.stats import gaussian_kde
-from scipy.fft import ifft, fftshift, fft, fftfreq
+from scipy.fft import fft, fftfreq
+from scipy.special import jv
 
 N = 100  # Number of sample points to display (rolling window size)
 K = 2    # Number of random variables per random process (number of components)
@@ -21,14 +22,8 @@ def generate_arma_process(ar_params, ma_params, n):
     arma_process = ArmaProcess(ar, ma)
     return arma_process.generate_sample(n)
 
-def jakes_spectrum(f, fd):
-    return np.where(np.abs(f) <= fd, 1 / (np.pi * fd * np.sqrt(1 - (f / fd) ** 2)), 0)
-
-def compute_impulse_response_jakes(fd, num_points):
-    f = fftfreq(num_points, d=1.0)  # Frequency bins
-    S_f = jakes_spectrum(f, fd)
-    h_t = np.real(fftshift(ifft(S_f)))
-    return h_t
+def jakes_filter(t, fd):
+    return (1.457 / fd) * jv(1/4, 2 * np.pi * fd * t)
 
 # Initialize ARMA processes for each component of Y
 phi = 0.6
@@ -53,12 +48,37 @@ B = P @ Drt
 Y = np.zeros((K, N))
 X = np.zeros((K, N))
 
-# Define parameters for the Jakes spectrum
+# Define parameters for the Jakes filter
 fd = 0.1  # Maximum Doppler frequency
-num_points = 512  # Number of points in the frequency domain
-h_jakes = compute_impulse_response_jakes(fd, num_points)
+t_max = 100  # Maximum time for the filter
+num_points = 1000  # Number of points in the time domain
+t = np.linspace(0, t_max, num_points)
+h_jakes = jakes_filter(t, fd)
 
-# Set up the figure and axes
+# Calculate FFT of the Jakes filter
+h_jakes_fft = fft(h_jakes)
+freqs = fftfreq(num_points, t_max / num_points)
+
+# Plot the Jakes filter response and its FFT
+fig_filter, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10))
+
+# Time domain
+ax1.plot(t, h_jakes)
+ax1.set_title('Jakes Filter Impulse Response')
+ax1.set_xlabel('Time')
+ax1.set_ylabel('Amplitude')
+
+# Frequency domain
+ax2.plot(freqs[:num_points//2], np.abs(h_jakes_fft)[:num_points//2])
+ax2.set_title('FFT of Jakes Filter Response')
+ax2.set_xlabel('Frequency')
+ax2.set_ylabel('Magnitude')
+ax2.set_xlim(0, fd*2)  # Limit x-axis to 2*fd for better visibility
+
+plt.tight_layout()
+plt.show()
+
+# Set up the figure and axes for the animation
 fig, axs = plt.subplots(4, 1, figsize=(12, 24), gridspec_kw={'height_ratios': [2, 1, 1, 1]})
 
 # Lines for the time series
@@ -109,12 +129,13 @@ def update(frame):
     Y[:, :-1] = Y[:, 1:]
     Y[:, -1] = new_sample
     X[:, :-1] = X[:, 1:]
-    X[:, -1] = A + B @ new_sample
+    #X[:, -1] = A + B @ new_sample
+    X[:, -1] = 0.5 #making the signal just a constant to see what will happen.
     
-    # Apply Jakes spectrum filter to the output signal
+    # Apply Jakes filter to the output signal
     X_filtered = np.zeros_like(X)
     for k in range(K):
-        X_filtered[k, :] = convolve(X[k, :], h_jakes, mode='same')
+        X_filtered[k, :] = convolve(X[k, :], h_jakes, mode='same') 
     
     for k, line_100 in enumerate(lines_100):
         line_100.set_data(np.arange(100), X_filtered[k, :])
@@ -141,12 +162,13 @@ def update(frame):
     return lines_100 + cross_corr_lines + pdf_lines + fourier_lines
 
 def compute_cross_correlation(x, y):
+    x = (x - np.mean(x))/np.std(x)
+    y = (y - np.mean(y))/np.std(y)
     correlation = correlate(x, y, mode='full')
     lags = np.arange(-len(x) + 1, len(x))
-    correlation = correlation / (np.std(x) * np.std(y) * len(x))
+    correlation = correlation / (len(x))
     return lags, correlation
 
 ani = FuncAnimation(fig, update, frames=np.arange(0, float(100)), init_func=init, blit=True, interval=100)
 plt.tight_layout()
 plt.show()
-

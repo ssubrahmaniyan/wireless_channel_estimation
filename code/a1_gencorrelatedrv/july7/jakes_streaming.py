@@ -5,6 +5,7 @@ from sympy import Matrix
 from statsmodels.tsa.arima_process import ArmaProcess
 from scipy.signal import correlate
 from scipy.stats import gaussian_kde
+import json
 
 N = 100  # Number of sample points to display (rolling window size)
 K = 3    # Number of random variables per random process (number of components)
@@ -14,6 +15,8 @@ Fd = 1    # Doppler spread
 global X, X_filtered
 X = np.zeros((K, N))
 X_filtered = np.zeros((K, N))
+
+#fo = open(r"channels", "w")
 
 def generate_positive_definite_matrix(k):
     A = np.random.rand(k, k)
@@ -139,12 +142,14 @@ def update(frame):
     Y[:, -1] = new_sample
     X[:, :-1] = X[:, 1:]
     X[:, -1] = A + B @ new_sample
-    
+        
     # Apply filter to the last 100 samples
     for k in range(K):
         X_filtered[k, :-1] = X_filtered[k, 1:]  # Shift existing filtered data
         X_filtered[k, -1] = 10 * np.convolve(X[k, -100:], h[-100:], mode='valid')[-1]
     
+#    json.dump(X_filtered[:, -1].tolist(), fo)
+            
     for k, (line_100, line_100_filtered) in enumerate(zip(lines_100, lines_100_filtered)):
         line_100.set_data(np.arange(100), X[k])
         line_100_filtered.set_data(np.arange(100), X_filtered[k])
@@ -180,3 +185,4 @@ def compute_cross_correlation(x, y):
 ani = FuncAnimation(fig, update, frames=np.arange(0, float(100)), init_func=init, blit=True, interval=100)
 plt.tight_layout()
 plt.show()
+#fo.close()
