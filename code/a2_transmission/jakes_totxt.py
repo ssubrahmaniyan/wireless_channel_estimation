@@ -8,6 +8,7 @@ K = 3    # Number of random variables per random process (number of components)
 Fs = 100  # Sampling frequency
 Fc = 10   # Center frequency
 Fd = 1    # Doppler spread
+F = 5 # Signal frequency band
 P = 0  # Number of data lines to generate
 
 X = np.zeros((K, N))
@@ -57,7 +58,9 @@ Drt = np.sqrt(D)
 B = P_mat @ Drt
 
 # Generate filter
-f = np.linspace(-Fs/2, Fs/2, N)
+f_positive = np.linspace(Fc - F, Fc + F, N // 2)
+f_negative = np.linspace(-Fc - F, -Fc + F, N // 2)
+f = np.concatenate((f_negative, f_positive))
 psd = jakes_psd(f, Fc, Fd)
 h = np.fft.ifftshift(np.fft.ifft(np.sqrt(psd)).real)
 
@@ -83,7 +86,7 @@ with open("channels.txt", "w") as fo:
         # Apply filter to the last 100 samples
         for k in range(K):
             X_filtered[k, :-1] = X_filtered[k, 1:]  # Shift existing filtered data
-            X_filtered[k, -1] = 10 * np.convolve(X[k, -100:], h[-100:], mode='valid')[-1]
+            X_filtered[k, -1] = 10 * np.convolve(X[k, -Fs:], h[-Fs:], mode='valid')[-1]
         
         # Write the filtered data to the file
         json.dump(X_filtered[:, -1].tolist(), fo)
