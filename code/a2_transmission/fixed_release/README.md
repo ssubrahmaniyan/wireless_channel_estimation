@@ -7,4 +7,4 @@
 ## Fixes done of 15 August 2024
 1. Rewrote transmission simulation to be compatible with the new type of channel generations.
 2. Created a plot of BER, MSE as a function of SNR for a fixed doppler frequency of 100 Hz.
-[Plot](https://github.com/ssubrahmaniyan/wireless_channel_estimation/blob/0cd6e3973ad2b5653693d8474881874f362b5779/code/a2_transmission/fixed_release/errorsVSsnr.png)
+![Plot](https://github.com/ssubrahmaniyan/wireless_channel_estimation/blob/0cd6e3973ad2b5653693d8474881874f362b5779/code/a2_transmission/fixed_release/errorsVSsnr.png)
