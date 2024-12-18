@@ -14,4 +14,8 @@ Workflow for SISO wireless communication:
 - Have implemented the standard header-packet channel estimation pipeline, and observed BER vs SNR (waterfall) plots and varied header:packet ratios too
 - Have implemented a Vector Autoregression based model to predict channel gains into the future after training on least-squares based channels developed by sending pilots where data is known.
 - Have implemented 2 autoregressors - one for magnitude and phase each - instead of a VAR model, and observed that the prediction accuracy is not as good since VAR maintains the autocorrelation better.
-- Plotted retransmission frequency against doppler frequency for same and varying MSE thresholds. 
+- Plotted retransmission frequency against doppler frequency for same and varying MSE thresholds.
+
+# Some notes
+- The BER vs SNR plot plateaus at around 13 dB, this is not due to the model, it is because the number of bits is insufficient to support BERs below that point.
+- We need to start plotting Eb/N0 henceforth, which I believe (need to check) involves doing SNR/2 for the plots we have so far. 
