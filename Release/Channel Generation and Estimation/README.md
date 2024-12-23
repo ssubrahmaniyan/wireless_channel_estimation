@@ -5,7 +5,7 @@ transmit a bit of information, with the BPSK modulation scheme, the symbol x tha
 Then, the symbol y that is received is modeled as: 
 
 <div align="center">
-    **y = h*x + n**
+    y = h*x + n
 </div>
 
 where n is noise of a specified distribution and level determined by the Signal-to-Noise Ratio (SNR) of the transmission. 
