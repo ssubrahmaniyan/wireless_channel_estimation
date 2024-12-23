@@ -5,4 +5,6 @@ This directory is organized as follows:
   
 * Final and Working Codes - Documented and fixed implementations that integrate several concepts and codes. These codes summarize the results of different tasks in the project.
   
-* Outputs, Plots and Inferences - Contains useful plots and inferences derived from working on the project, along with some plots and inferences which are seemingly incorrect or unexpected (organized in a separate subfolder). 
+* Outputs, Plots and Inferences - Contains useful plots and inferences derived from working on the project, along with some plots and inferences which are seemingly incorrect or unexpected (organized in a separate subfolder).
+  
+* Release - The final results of implementations and discussions
