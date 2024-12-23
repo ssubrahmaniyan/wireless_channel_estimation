@@ -36,8 +36,12 @@ The effect of coding on different channels, provided we know the channel, has be
 
 The plot above shows the BER Vs SNR characteristic for an AWGN channel where we assume we know the channel.  
 
+
 ![BER Vs SNR Plot2](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_Coding.png)
+
 The plot above shows the BER Vs SNR characteristic for an uncorrelated Rayleigh channel where we assume we know the channel.
 
+
 ![BER Vs SNR Plot3](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Jakes_Coding.png)
+
 The plot above shows the BER Vs SNR characteristic for a correlated Rayleigh channel where we assume we know the channel.
