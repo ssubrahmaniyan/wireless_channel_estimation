@@ -30,8 +30,10 @@ Channel impairments that have been covered as a part of the channel models explo
 * Doppler Shift: Frequency change due to relative motion between transmitter and receiver.
 * Noise: Random additive disturbance modeled as Gaussian noise.
 
+Correlation in the Rayleigh Fading channel has been introduced by the sum of sinusoids method as outlined in <https://www.ee.iitm.ac.in/~giri/pdfs/EE5141/Jakes-Simulation.pdf>. This has been adapted from the Rapport textbook and can be easily implemented to generate a Jakes channel.
+
 ### Plots
-![plot](/Release/Channel Generation and Estimation/BER.png)
+![plot](/Release/Channel Generation and Estimation/BER_Vs_SNR.png)
 
 This plot shows the BER vs SNR characteristics for the 3 channels described above. Clearly, an AWGN channel is the most SNR dependent, and in the presence of SNR values of around 10 dB, the transmitted bits will be perfectly received. 
 Rayleigh fading poses a slightly tougher problem of bit estimation. 
