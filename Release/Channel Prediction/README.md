@@ -13,10 +13,18 @@ The algorithm used is as follows:
 
 The purpose behind computing the MSE values is to determine when to retransmit header packets and retrain the VAR model with a fresh and accurate set of channel values. We have examined an arbitrary range of MSE thresholds from 0.01 to 0.1, and when the MSE for any set of predicted channels exceeds this threshold, we request a retransmission of header packets, thereby ensuring accuracy in the predictions of the VAR model. 
 
+An evaluation metric to evaluate the performance of the VAR model is to compute the retransmission frequency of header packets, which is simply the number of pilot packets transmitted divided by the total number of packets transmitted. This is necessary since the aim of using VAR is to reduce the number of header packets needed for reliable communication. 
+
 I also need to edit the code to train the VAR model on all the estimated channel values, rather than the channel values that are correctly (i.e. MSE is within the threshold) predicted, and observe the results. 
 
 ### Plots
-![hi](/Release/Channel%20Prediction/figure1_real_channel_magnitude_bessel.png)
-The plot above shows the behaviour of the 
+![Retransmission Frequency](/Release/Channel%20Prediction/Retransmission_Freq_Vs_Doppler_VAR.png)
+The plot above shows the behaviour of the VAR model characterized by the Retransmission Frequency computed as above, plotted against the Doppler frequency. Note that as the Doppler frequency increases, the channel values become harder to predict and the need to retransmit haders increases. Note also that this is at a fixed threshold of MSE. 
+
+![Threshold](/Release/Channel%20Prediction/Retransmission_Freq_Vs_Doppler_VAR_Thresholds.png)
+This plot examines the performance of the VAR model for a correlated Rayleigh channel with Jakes spectrum at different MSE thresholds from 0.01 to 0.1, and clearly the retransmissions increase at a given Doppler frequency for a lower MSE threshold. 
+
+
+
 
 ![hi](/Release/Channel%20Prediction/figure1_real_channel_magnitude_bessel.png)
