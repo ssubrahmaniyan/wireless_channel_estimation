@@ -2,8 +2,9 @@
 ### Algorithm
 
 The process of receiving symbols after being transmitted through the channel and then demodulating them to predict a set of bits needs to be accurate if we are to get a reliable estimate of the channel. The demodulation process may induce some errors, and a more reliable method of ensuring that the demodulation being performed is accurate is if we use Error Correcting Codes that introduce parity bits into the message we are transmitting. 
-A popular method of ECC for wireless communication in the 5G standard is LDPC - Low Density Parity Check Codes. I have observed implementations of encoding and decoding messages using LDPC with a library named pyldpc. 
-A few shortcomings of the implementation in the library have also been fixed and integrated in my codes, which can be found in LDPC.ipynb, along with all the code used for plotting. 
+A popular method of ECC for wireless communication in the 5G standard is LDPC - Low Density Parity Check Codes. 
+
+I have observed implementations of encoding and decoding messages using LDPC with a library named pyldpc.  A few shortcomings of the implementation in the library have also been fixed and integrated in my codes, which can be found in LDPC.ipynb, along with all the code used for plotting. 
 
 The general algorithm involving LDPC is given:
 * Generate a set of bits to be transmitted
