@@ -33,6 +33,7 @@ The effect of coding on different channels, provided we know the channel, has be
 
 ### Plots
 ![BER Vs SNR Plot1](/Release/Error%20Correction%20Codes/BER_Vs_Eb_AWGN_Coding.png)
+
 The plot above shows the BER Vs SNR characteristic for an AWGN channel where we assume we know the channel.  
 
 ![BER Vs SNR Plot2](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_Coding.png)
