@@ -38,6 +38,8 @@ Correlation in the Rayleigh Fading channel has been introduced by the sum of sin
 This plot shows the BER vs SNR characteristics for the 3 channels described above. Clearly, an AWGN channel is the most SNR dependent, and in the presence of SNR values of around 10 dB, the transmitted bits will be perfectly received. 
 Rayleigh fading poses a slightly tougher problem of bit estimation. 
 
+The notebook in the directory - Channel_Variations.ipynb - contains complete codes on implementing the 3 different channels and their transmission and demodulation. 
+
 Need to still understand why the Jakes spectrum plot is coinciding with the uncorrelated Rayleigh faded channel plot. 
 
 
