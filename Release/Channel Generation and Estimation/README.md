@@ -4,7 +4,9 @@ Any wireless communication medium is characterized by a channel gain, which is a
 transmit a bit of information, with the BPSK modulation scheme, the symbol x that we transmit will be either 1 (in case the bit we want to communicate is 0) or -1 (in case the bit we want to communicate is 1). 
 Then, the symbol y that is received is modeled as: 
 
-**y = h*x + n**
+<div align="center">
+    **y = h*x + n**
+</div>
 
 where n is noise of a specified distribution and level determined by the Signal-to-Noise Ratio (SNR) of the transmission. 
 
