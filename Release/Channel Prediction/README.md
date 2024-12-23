@@ -24,4 +24,5 @@ The plot above shows the behaviour of the VAR model characterized by the Retrans
 ![Threshold](/Release/Channel%20Prediction/Retransmission_Freq_Vs_Doppler_VAR_Thresholds.png)
 This plot examines the performance of the VAR model for a correlated Rayleigh channel with Jakes spectrum at different MSE thresholds from 0.01 to 0.1, and clearly the retransmissions increase at a given Doppler frequency for a lower MSE threshold. 
 
+The notebook Channel_Estimation_Pipeline_outputs.ipynb contains code to reproduce these outputs from scratch, and I need to fix the last plot generated in the notebook relating to BER Vs SNR. 
 
