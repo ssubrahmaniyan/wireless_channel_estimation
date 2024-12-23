@@ -4,11 +4,13 @@ This part of the project aims to predict the channel values using autoregressive
 
 ## Simple Autoregressive Model
 
-The first attempt is to use a simple autoregressive model to predict the channel. The idea is executed in steps as follows:
+**All of the programs, plots and data relevant to this model is in the folder /simpleVAR in the same directory**
+
+The first attempt is to use a simple autoregressive model(with a data driven approach) to predict the channel. The idea is executed in steps as follows:
 1. Send a few packets of pilot bits and use an estimation method to gain estimates for the channels.
 1. Train a VAR model(chosen because the channel is complex) to learn the channels and make a prediction for the next channel value.
 1. Use the sign of this channel value(because the scheme used is BPSK) and find the data that was sent. Use this data and an estimation method to estimate the true channel value(note that this is different from the predicted. Estimated and predicted are different)/
-1. Check if this prediction is good enough by computing the MSE. If the MSE exceeds a threshold, resend a few pilot packets and restart from step 1. Otherwise, append the new prediction to the model arguments, refit and make another prediction and continue the process.
+1. Check if this prediction is good enough by computing the MSE. If the MSE exceeds a threshold, resend a few pilot packets(varying the number of such packets will vary the results) and restart from step 1. Otherwise, append the new prediction to the model arguments, refit and make another prediction and continue the process.
 
 
 ### Results
@@ -34,8 +36,23 @@ Same plot as the above, but with a variation in the SNR. The number of points is
 
 ## Organisational Task
 
-1. Should I instead divide the files into images, data and scripts in different folders and store them?
+~~1. Should I instead divide the files into images, data and scripts in different folders and store them?~~
 
 ## Team meet questions:
 
 1. Here is another approach I thought about: How about I try running the simulations for different packet/data ratios and compare the percentages of the packets which can be predicted with a specified mse accuracy(for the header bits) and a specified ber accuracy(for the data bits)
+
+
+## Modified Autoregressive Model
+
+**All of the programs, plots and data related to this model are in the directory /datadrivenVAR**
+
+This model is very similar to the previous implementation except in that at an instant, either a pilot packet may be requested or a whole conventional packet(consisting of some pilot and some payload bits) may be requested.
+
+The process implemented in this part is:
+1. Send a pilot packets to tune the VAR model.
+1. Make a prediction for the channel value of the next quanta. I have called the size of a pilot packet a quanta because VAR models require the data to be sampled in uniform time - the samples should be of the same size and hence all the inputs must be equall separated.
+1. Send a conventional packet and estimate the channel value for the pilot part of the packet. Add this estimate to the training data for the VAR model.
+1. Refit the model and make another prediction for the next data quanta. Use the prediction to demodulate the data quanta, gain a refined estimate for the channel value for that quanta and retrain and repeat until all the data quanta are done.
+1. When the whole packet is processed, compute the MSE between the predicted and estimated h values for all of the quantas in the packet. If this is greater than the threshold, send a bunch of pilots to refit the model and repeat the same process.
+1. The BER values are computed for the data packets as done usually.
