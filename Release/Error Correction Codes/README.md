@@ -46,3 +46,16 @@ The plot above shows the BER Vs SNR characteristic for an uncorrelated Rayleigh 
 ![BER Vs SNR Plot3](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Jakes_Coding.png)
 
 The plot above shows the BER Vs SNR characteristic for a correlated Rayleigh channel where we assume we know the channel.
+
+
+### Encoding Window Length for correlated channels
+The encoding window length (n) that is used in case of correlated channels must be chosen carefully with respect to the coherence time - the time for which the channel can be assumed to be constant. This time depends inversely with the Doppler Frequency and this relation can be assumed to be an exact inverse. 
+
+Hence for a Doppler frequency of 100 Hz, the coherence time is 0.01 seconds, and for a Sampling frequency of 10000 Hz, this means that 100 datapoints are transmitted each second. Ideally we would want 1 in 4 coherence time packets to be entirely corrected by LDPC, so in 400 samples that are transmitted, we can correct upto 100 errors. 
+
+In order to correct t errors, we need the minimum distance of the code to satisfy this:
+<div align="center">
+    d_min > 2*t + 1
+</div>
+
+The minimum distance is proportional to the number of parity bits, and hence as we increase n, we can correct more errors in the transmission and achieve lower BER at the same SNR. For a rate of 0.5, we need to transmit 400 bits or 800 symbols with 400 parity bits to achieve a redundancy of 100 bits in the original message. 
