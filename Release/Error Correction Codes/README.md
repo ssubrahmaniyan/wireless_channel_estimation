@@ -55,7 +55,7 @@ The plot above shows the BER Vs SNR characteristic for a correlated Rayleigh cha
 
 ![BER Vs SNR Plot0](/Release/Error%20Correction%20Codes/BER_Vs_SNR.png)
 
-Fo reference, the plot above shows the BER Vs SNR characteristic for 3 different channel types without coding. The results suggest that the Jakes method being suggested is very similar to a typical Rayleigh channel generator. This needs to be discussed. 
+For reference, the plot above shows the BER Vs SNR characteristic for 3 different channel types without coding. The results suggest that the Jakes method being suggested is very similar to a typical Rayleigh channel generator. This needs to be discussed. 
 
 
 ### Encoding Window Length for correlated channels
@@ -73,4 +73,13 @@ The minimum distance is proportional to the number of parity bits, and hence as 
 The plots below show the variation in coding gain for different encoding window lengths for 10000 bits transmitted. 
 
 ### Plots for variable encoding window length
+
+![BER Vs SNR Plot0n](/Release/Error%20Correction%20Codes/SNR_Vs_Eb_AWGN_Nvals.png)
+
+The plot above shows the BER vs SNR plots for different encoding window lengths for 10000 bits and Fs = 10000 for a AWGN channel
+
+![BER Vs SNR Plot1n](/Release/Error%20Correction%20Codes/SNR_Vs_Eb_Jakes_Nvals.png)
+
+The plot above shows the BER vs SNR plots for different encoding window lengths for 10000 bits and Fs = 10000 for a correlated Jakes channel
+
 
