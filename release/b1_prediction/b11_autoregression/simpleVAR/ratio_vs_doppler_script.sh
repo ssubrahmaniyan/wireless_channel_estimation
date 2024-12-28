@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create or clear the output file
-output_file="parameter_sweep.txt"
+output_file="parameter_sweep_data.txt"
 echo "dopp,mse,ratio" > $output_file
 
 # Define parameter ranges
