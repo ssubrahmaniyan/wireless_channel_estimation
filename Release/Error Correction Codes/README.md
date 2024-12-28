@@ -30,7 +30,7 @@ Parameters:
 - The rate of coding R = 1 - (m/n) = k/n
 - Closer R is to 1, more uncoded the data is, suitable for less noise or no noise.
 
-The effect of coding on different channels, provided we know the channel, has been examined below. One issue is that in the current implementation, k/n is not exaclty equal to the rate. This issue needs to be fixed. 
+The effect of coding on different channels, provided we know the channel, has been examined below. Note that the rate is defined by k/n, and not by d_v/d_c. 
 
 ### Plots
 ![BER Vs SNR Plot1](/Release/Error%20Correction%20Codes/BER_Vs_Eb_AWGN_Coding.png)
@@ -45,7 +45,17 @@ The plot above shows the BER Vs SNR characteristic for an uncorrelated Rayleigh 
 
 ![BER Vs SNR Plot3](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Jakes_Coding.png)
 
-The plot above shows the BER Vs SNR characteristic for a correlated Rayleigh channel where we assume we know the channel.
+The plot above shows the BER Vs SNR characteristic for a correlated Rayleigh channel where we assume we know the channel, for 100000 bits and Fs = 100000.
+
+
+![BER Vs SNR Plot4](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Jakes_Coding2.png)
+
+The plot above shows the BER Vs SNR characteristic for a correlated Rayleigh channel where we assume we know the channel, for 10000 bits and Fs = 10000.
+
+
+![BER Vs SNR Plot0](/Release/Error%20Correction%20Codes/BER_Vs_SNR.png)
+
+Fo reference, the plot above shows the BER Vs SNR characteristic for 3 different channel types without coding. The results suggest that the Jakes method being suggested is very similar to a typical Rayleigh channel generator. This needs to be discussed. 
 
 
 ### Encoding Window Length for correlated channels
@@ -58,4 +68,9 @@ In order to correct t errors, we need the minimum distance of the code to satisf
     d_min > 2*t + 1
 </div>
 
-The minimum distance is proportional to the number of parity bits, and hence as we increase n, we can correct more errors in the transmission and achieve lower BER at the same SNR. For a rate of 0.5, we need to transmit 400 bits or 800 symbols with 400 parity bits to achieve a redundancy of 100 bits in the original message. 
+The minimum distance is proportional to the number of parity bits, and hence as we increase n, we can correct more errors in the transmission and achieve lower BER at the same SNR. For a rate of 0.5, we need to transmit 400 bits or 800 symbols with 400 parity bits to achieve a redundancy of 100 bits in the original message. The simulation below explores the BER at different n values or encoding lengths. 
+
+The plots below show the variation in coding gain for different encoding window lengths for 10000 bits transmitted. 
+
+### Plots for variable encoding window length
+
