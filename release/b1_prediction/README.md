@@ -124,3 +124,24 @@ The corresponding data is found in the csv file with the same name.
 ### Observations
 1. It is noted that as the packet and pilot sizes are increased, the BER curves flatten out at higher and higher BER. This is probably because the assumption of a constant channel value from the previous packet becomes a bad assumption.
 1. The MSE, pilot ratio and BER curves all fall with an increasing SNR(same as Eb/N0 for this case), which is the expected behavior.
+
+### To-do
+
+1. Run a script to make the same plots for different doppler frequencies.
+1. Run a script to make the same plots by varying the packet and pilot sizes to see the BER curves.
+
+## Simulation of simple transmission with a data-driven approach involving interpolation of estimates.
+
+For this part of the project, the idea adopted is to make refined estimates of the channel values using interpolation between two channels that are accurately known from pilot packets. **Add detailed explanation for the same**.
+
+## Data driven interpolation simulation of 1Hz doppler channel
+
+The plot obtained for a doppler value of 1Hz is shown below. The corresponding data file is saved in the same name with a .csv extension.
+
+![plot](/release/b1_prediction/b12_pilot_positioning/interpolation/1Hz_datadriven_interpolation.png)
+
+## Data driven interpolation for 100Hz doppler channel
+
+The corresponding plot with the same parameters, except for a 100 Hz doppler channel is given below.
+
+![plot](/release/b1_prediction/b12_pilot_positioning/interpolation/100Hz_datadriven_interpolation.png)
