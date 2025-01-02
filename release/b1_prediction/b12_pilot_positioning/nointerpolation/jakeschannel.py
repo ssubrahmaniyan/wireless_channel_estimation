@@ -8,29 +8,75 @@ def generate_positive_definite_matrix(k):
     A = np.dot(A, A.T)  # Make it symmetric and positive definite
     return A
 
-def jakes_sos(P, K, Fs, Fd, N, typ):
-    t = np.linspace(0, P/Fs, P)
-    omega_d = 2 * np.pi * Fd
+def jakes_sos(P, K, Fs, Fd, N_paths, typ):
+    """
+    Modified Jakes simulator implementation that preserves the original function signature
+    while implementing equations (7) and (8) from the paper.
     
-    # Initialize jakes_rvs to store real or complex numbers
+    Parameters:
+    P : int
+        Number of time points
+    K : int
+        Number of realizations
+    Fs : float
+        Sampling frequency
+    Fd : float
+        Doppler frequency
+    N_paths : int
+        Number of paths (will be used to determine M where N = 4M + 2)
+    typ : str
+        'comp' for complex output, anything else for real output
+        
+    Returns:
+    jakes_rvs : complex array of shape (K, P)
+        Array of K realizations of the fading process
+    """
+    # Generate time vector
+    t = np.linspace(0, P/Fs, P)
+    wd = 2 * np.pi * Fd
+    
+    # Calculate M from N_paths (approximating N ≈ N_paths)
+    M = (N_paths - 2) // 4
+    N = 4 * M + 2  # Actual N used in equations
+    
+    # Initialize output array
     jakes_rvs = np.zeros((K, P), dtype=complex)
     
+    # Generate realizations
     for k in range(K):
-        alpha = np.random.uniform(0, 2 * np.pi, N)
-        alpha_m = np.array([((2 * np.pi * n) - np.pi + al)/(4*N) for n, al in enumerate(alpha)])
-        a_m = np.random.uniform(0, 2 * np.pi, N)
-        b_m = np.random.uniform(0, 2 * np.pi, N)
+        # Generate beta_n according to equation (7c)
+        beta = np.zeros(M + 1)
+        beta[0] = np.pi/4
+        beta[1:] = np.pi * np.arange(1, M + 1) / M
         
-        cosine_terms = np.cos((omega_d * t[:, None] * np.cos(alpha_m)) + a_m)
-        real_part = np.sqrt(1/N) * np.sum(cosine_terms, axis=1)
+        # Generate a_n according to equation (7a)
+        a = np.zeros(M + 1)
+        a[0] = np.sqrt(2) * np.cos(beta[0])
+        a[1:] = 2 * np.cos(beta[1:])
+        
+        # Generate b_n according to equation (7b)
+        b = np.zeros(M + 1)
+        b[0] = np.sqrt(2) * np.sin(beta[0])
+        b[1:] = 2 * np.sin(beta[1:])
+        
+        # Generate w_n according to equation (7d)
+        w = np.zeros(M + 1)
+        w[0] = wd
+        w[1:] = wd * np.cos(2 * np.pi * np.arange(1, M + 1) / N)
+        
+        # Generate random phases for each realization
+        phi = np.random.uniform(-np.pi, np.pi, M + 1)
+        
+        # Calculate u_c(t) according to equation (8b)
+        u_c = (2/np.sqrt(N)) * np.sum([a[n] * np.cos(w[n]*t + phi[n]) for n in range(M + 1)], axis=0)
         
         if typ == 'comp':
-            sine_terms = np.sin((omega_d * t[:, None] * np.cos(alpha_m)) + b_m)
-            imag_part = np.sqrt(1/N) * np.sum(sine_terms, axis=1)
-            jakes_rvs[k] = real_part + 1j * imag_part
+            # Calculate u_s(t) according to equation (8c)
+            u_s = (2/np.sqrt(N)) * np.sum([b[n] * np.cos(w[n]*t + phi[n]) for n in range(M + 1)], axis=0)
+            jakes_rvs[k] = u_c + 1j * u_s
         else:
-            jakes_rvs[k] = real_part + 1j * 0 # Enforcing the real numbers also to be modelled as complex for easy use
-    
+            jakes_rvs[k] = u_c + 1j * 0
+            
     return jakes_rvs
 
 def main():
