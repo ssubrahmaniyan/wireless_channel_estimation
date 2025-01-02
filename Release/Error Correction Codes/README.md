@@ -82,4 +82,44 @@ The plot above shows the BER vs SNR plots for different encoding window lengths 
 
 The plot above shows the BER vs SNR plots for different encoding window lengths for 10000 bits and Fs = 10000 for a correlated Jakes channel
 
+### Hard and Soft Decision Decoding and accounting for the Fd/Fs ratio
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/SNR_Vs_Eb_3_channel.png)
+
+The plot above shows the BER vs SNR plots for different channels for Fd = 1 Hz and Fs = 1000000 Hz for 10000 points. Clearly, the Jakes curve lies between the AWGN and the Rayleigh curves at appropriate values of Fd. 
+
+The algorithm used so far has involved digitizing the received signals, after dividing the received symbols with the known or estimated channel, and predicting the transmitted bits from this digitization. Such an approach is called a Hard Decision Decoder. 
+
+To improve the accuracy of the prediction, a Soft Decision Decoder is used. There ae different algorithms through which this may be done as specified by https://ieeexplore.ieee.org/document/7050112 and https://iopscience.iop.org/article/10.1088/1757-899X/1105/1/012039.
+
+Approaches tried out:
+- Computing Log Likelihood Ratio (LLR) for received symbols after normalizing with the channel. For BPSK, the LLR is given by
+ <div align="center">
+    LLR = 2 * y / variance of noise
+</div> 
+LLR > 0 implies that the bit is 0, and LLR < 0 implies that the bit is 1. This approach is practically the same as a hard decision decoder. 
+
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_LLR.png)
+
+The plot above shows the BER vs Eb/N0 plot for Rayleigh fading channel for 10000 bits with this approach. 
+
+
+- Computing sum of squared error between normalized recieved symbols and all possible transmitted symbols whose encoded versions have the least MSE with the received normalized symbol vector - highly inefficient and does not scale with k. The paper cited above only suggests a way to speed it up on hardware. 
+
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+
+The plot above shows the BER vs Eb/N0 plot for Rayleigh fading channel for 10000 bits with this approach. 
+
+
+- LDPC decoding with LLRs - the normalized received symbols are used in the Belief Propagation Algorithm and the posterior LLR signs are used to predict the transmitted bits.
+
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/SNR_Vs_Eb_AWGN_LogBP.png)
+
+The plot above shows the BER vs Eb/N0 plot for AWGN channel with this approach
+
+
+- SISO Iterative Message Passing Decoder
+
+  
+
+
 
