@@ -1,7 +1,8 @@
 import numpy as np
 import json
 import matplotlib.pyplot as plt
-from scipy.special import erfc 
+from scipy.special import erfc
+from scipy.interpolate import interp1d
 
 # Load the complex channel values
 with open("channels.txt", "r") as f:
@@ -13,10 +14,9 @@ def generate_random_bits(n):
     return np.random.choice([-1, 1], size=n)
 
 def transmit_data(data, channel, eb_no_db, bit_rate=1):
-    #signal = channel * data
     signal = channel / np.sqrt(channel_mod) * data
     eb_no_linear = 10**(eb_no_db / 10)
-    n0 = 1 / eb_no_linear  # Fixed noise power calculation
+    n0 = 1 / eb_no_linear
     noise = np.sqrt(n0 / 2) * (np.random.randn(len(data)) + 1j * np.random.randn(len(data)))
     return signal + noise
 
@@ -35,10 +35,13 @@ def send_pilot(current_index, pilot_size, snr_db):
     h_est = estimate_channel(received_pilot, pilot_bits)
     return h_est, current_index + pilot_size
 
-def sign(number):
-    if np.angle(number) > -np.pi/2 and np.angle(number) < np.pi/2:
-        return 1
-    return -1
+def interpolate_channel(time_points, channel_estimates):
+    # Interpolate real and imaginary parts separately
+    real_interp = interp1d(time_points, np.real(channel_estimates), kind='linear')
+    imag_interp = interp1d(time_points, np.imag(channel_estimates), kind='linear')
+    
+    # Return a function that combines both interpolations
+    return lambda x: real_interp(x) + 1j * imag_interp(x)
 
 def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
     current_index = 0
@@ -48,75 +51,80 @@ def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
     bit_errors = 0
     total_data_bits = 0
     mse_values = []
-    index = 0
+    
     # Initial pilot
-    h_est, current_index = send_pilot(current_index, pilot_size, snr_db) # Sending y = hp + n
+    h_est, current_index = send_pilot(current_index, pilot_size, snr_db)
     if h_est is None:
         return None
     
-    channel_estimates.append(h_est) # Finding h from y = hp + n and appending it
-    pilot_indices.append(current_index - pilot_size)
-    total_bits += pilot_size
-    currmse = []
-    # Main loop
-    while current_index < len(channel_vals) - packet_size:
-        index += 1
-        # Data transmission
-        data_bits = generate_random_bits(packet_size) # generate data packet [x]
-        actual_channel = channel_vals[current_index:current_index + packet_size] # find the vector array [h']
-        received_data = transmit_data(data_bits, actual_channel, snr_db) # return [y] = [h'][x] + [n]
+    channel_0 = h_est
+    pilot_time = current_index - pilot_size + pilot_size//2  # Center of pilot
+    
+    while current_index < len(channel_vals) - 2*packet_size:  # Need space for two packets
+        # First data packet
+        data_bits_1 = generate_random_bits(packet_size)
+        actual_channel_1 = channel_vals[current_index:current_index + packet_size]
+        received_data_1 = transmit_data(data_bits_1, actual_channel_1, snr_db)
         
-        # Demodulate using previous channel estimate
-        h_prev = channel_estimates[-1]
-        demodulated = received_data * np.conjugate(h_prev) / (np.abs(h_prev)**2)
-        demodulated_bits = np.array([1 if np.real(x) > 0 else -1 for x in demodulated])
+        # Demodulate first packet using pilot channel estimate
+        demodulated_1 = received_data_1 * np.conjugate(channel_0) / (np.abs(channel_0)**2)
+        data_1 = np.array([1 if np.real(x) > 0 else -1 for x in demodulated_1])
         
-        # Re-estimate channel
-        h_new = np.linalg.lstsq(data_bits.reshape(-1, 1), received_data, rcond=None)[0][0]        
-        channel_estimates.append(h_new)
-
-        # Re-do the demodulation of data
-        demodulated = received_data * np.conjugate(h_new) / (np.abs(h_new)**2)
-        demodulated_bits = np.array([1 if np.real(x) > 0 else -1 for x in demodulated])        # plt.plot(data_bits, label = "data")
-        # plt.plot(demodulated_bits, label = "demod")
-        # plt.plot(actual_channel.real,label = "real channel")
-        # plt.plot(actual_channel.imag, label = 'imag channel')
-        # plt.legend()
-        # plt.show()
-        errors = 0
-        for i in range(len(demodulated_bits)):
-            if demodulated_bits[i] != data_bits[i]:
-                errors += 1
+        # Estimate channel for first packet
+        channel_1A = estimate_channel(received_data_1, data_1)
+        time_1 = current_index + packet_size//2
+        
+        # Second data packet
+        current_index += packet_size
+        data_bits_2 = generate_random_bits(packet_size)
+        actual_channel_2 = channel_vals[current_index:current_index + packet_size]
+        received_data_2 = transmit_data(data_bits_2, actual_channel_2, snr_db)
+        
+        # Demodulate second packet using channel_1A
+        demodulated_2 = received_data_2 * np.conjugate(channel_1A) / (np.abs(channel_1A)**2)
+        data_2 = np.array([1 if np.real(x) > 0 else -1 for x in demodulated_2])
+        
+        # Estimate channel for second packet
+        channel_2A = estimate_channel(received_data_2, data_2)
+        time_2 = current_index + packet_size//2
+        
+        # Interpolate channel for first packet
+        interp_func = interpolate_channel(
+            [pilot_time, time_2],
+            [channel_0, channel_2A]
+        )
+        interpolated_channel = interp_func(time_1)
+        
+        # Re-demodulate first packet using interpolated channel
+        demodulated_1_final = received_data_1 * np.conjugate(interpolated_channel) / (np.abs(interpolated_channel)**2)
+        final_bits_1 = np.array([1 if np.real(x) > 0 else -1 for x in demodulated_1_final])
+        
+        # Calculate errors for first packet
+        errors = np.sum(final_bits_1 != data_bits_1)
         bit_errors += errors
         total_data_bits += packet_size
-        total_bits += packet_size
         
-        # print(sign(h_prev), sign(h_new))
-        # plt.plot(data_bits, label = 'original')
-        # plt.plot(demodulated_bits, label='demodulated bits')
-        # plt.show()
-
-        # Calculate MSE
-        mse = np.abs(h_new - h_prev)**2
+        # Calculate MSE between successive channel estimates
+        mse = np.abs(channel_2A - channel_0)**2
         mse_values.append(mse)
-        # currmse.append(mse)
-        # avgmse = np.mean(currmse)
+        
         if mse > mse_threshold:
-        # if index == 1:
             # Send new pilot
             h_est, current_index = send_pilot(current_index, pilot_size, snr_db)
             if h_est is None:
                 break
-            channel_estimates.append(h_est)
+            channel_0 = h_est
+            pilot_time = current_index - pilot_size + pilot_size//2
             pilot_indices.append(current_index - pilot_size)
             total_bits += pilot_size
-            currmse = []
-            index = 0
         else:
-            # Continue with data
+            # Continue with next iteration
+            channel_0 = channel_2A
+            pilot_time = time_2
             current_index += packet_size
-            total_bits += packet_size
-
+            
+        total_bits += 2 * packet_size  # Count both packets
+    
     # Calculate metrics
     ber = bit_errors / total_data_bits if total_data_bits > 0 else 0
     pilot_ratio = (len(pilot_indices) * pilot_size) / total_bits
@@ -125,7 +133,7 @@ def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
     return pilot_ratio, ber, avg_mse
 
 # Parameter sweep
-snr_values = np.arange(0,40, 5)  # 0 to 30 dB in steps of 5 dB each
+snr_values = np.arange(0, 40, 5)
 mse_thresholds = [0.01, 0.05, 0.1, 0.2, 0.5]
 results = {}
 all_metrics = {}
@@ -156,6 +164,7 @@ for threshold in mse_thresholds:
         'avg_mses': avg_mses
     }
 
+# Plotting code remains the same
 plt.figure(figsize=(20, 6))
 colors = ['b', 'g', 'r', 'c', 'm']
 markers = ['o', 's', '^', 'D', 'v']
@@ -176,10 +185,8 @@ plt.subplot(1, 3, 2)
 EbN0Lin = 10**(snr_values / 10)
 theoryBerRayleigh = 0.5 * (1 - np.sqrt(EbN0Lin / (EbN0Lin + 1)))
 
-# Plot theoretical curves
 plt.semilogy(snr_values, theoryBerRayleigh, 'k:', linewidth=2, label='Rayleigh Theory')
 
-# Plot simulation results
 for threshold, color, marker in zip(mse_thresholds, colors, markers):
     bers = all_metrics[threshold]['bers']
     plt.semilogy(snr_values, bers, f'{color}-{marker}', label=f'MSE Threshold = {threshold}')
@@ -204,13 +211,13 @@ plt.grid(True)
 plt.legend()
 
 plt.tight_layout()
-plt.savefig('simulation_results_with_mse.png', dpi=300, bbox_inches='tight')
+plt.savefig('simulation_results_with_interpolation.png', dpi=300, bbox_inches='tight')
 plt.show()
 
-# Save detailed results to text file
-with open('simulation_results.txt', 'w') as f:
-    f.write("Channel Estimation Simulation Results\n")
-    f.write("===================================\n\n")
+# Save results to files
+with open('simulation_results_interpolation.txt', 'w') as f:
+    f.write("Channel Estimation Simulation Results (with Interpolation)\n")
+    f.write("================================================\n\n")
     
     for threshold in mse_thresholds:
         f.write(f"\nMSE Threshold = {threshold}\n")
@@ -223,18 +230,15 @@ with open('simulation_results.txt', 'w') as f:
         
         f.write("\n" + "=" * 50 + "\n")
 
-# Save as CSV for easier data processing
-with open('simulation_results.csv', 'w') as f:
-    # Header
+with open('simulation_results_interpolation.csv', 'w') as f:
     f.write("mse_threshold,snr,pilot_ratio,ber,avg_mse\n")
     
-    # Data
     for threshold in mse_thresholds:
         for i, snr in enumerate(snr_values):
             metrics = all_metrics[threshold]
             f.write(f"{threshold},{snr},{metrics['pilot_ratios'][i]},{metrics['bers'][i]},{metrics['avg_mses'][i]}\n")
 
 print("Results have been saved to:")
-print("1. simulation_results.txt - Formatted text file")
-print("2. simulation_results.csv - CSV file for data processing")
-print("3. simulation_results.png - Plot image with both Pilot Ratio and BER")
+print("1. simulation_results_interpolation.txt - Formatted text file")
+print("2. simulation_results_interpolation.csv - CSV file for data processing")
+print("3. simulation_results_with_interpolation.png - Plot image")

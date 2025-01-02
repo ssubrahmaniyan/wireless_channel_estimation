@@ -1,1 +1,0 @@
-dopp,SNR,ratio
