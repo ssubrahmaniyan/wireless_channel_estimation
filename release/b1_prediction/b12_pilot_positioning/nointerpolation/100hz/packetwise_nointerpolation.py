@@ -7,17 +7,16 @@ from scipy.special import erfc
 with open("channels.txt", "r") as f:
     channel_vals = [json.loads(line)[0] for line in f]
 channel_vals = np.array([complex(re, im) for re, im in channel_vals])
+channel_mod = np.mean(np.abs(channel_vals) ** 2)
 
 def generate_random_bits(n):
     return np.random.choice([-1, 1], size=n)
 
-import numpy as np
-
 def transmit_data(data, channel, eb_no_db, bit_rate=1):
-    signal = channel * data
-    signal_power = np.mean(np.abs(data)**2)
+    #signal = channel * data
+    signal = channel / np.sqrt(channel_mod) * data
     eb_no_linear = 10**(eb_no_db / 10)
-    n0 = signal_power / (eb_no_linear * bit_rate)
+    n0 = 1 / eb_no_linear  # Fixed noise power calculation
     noise = np.sqrt(n0 / 2) * (np.random.randn(len(data)) + 1j * np.random.randn(len(data)))
     return signal + noise
 
@@ -36,6 +35,11 @@ def send_pilot(current_index, pilot_size, snr_db):
     h_est = estimate_channel(received_pilot, pilot_bits)
     return h_est, current_index + pilot_size
 
+def sign(number):
+    if np.angle(number) > -np.pi/2 and np.angle(number) < np.pi/2:
+        return 1
+    return -1
+
 def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
     current_index = 0
     channel_estimates = []
@@ -44,7 +48,7 @@ def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
     bit_errors = 0
     total_data_bits = 0
     mse_values = []
-
+    index = 0
     # Initial pilot
     h_est, current_index = send_pilot(current_index, pilot_size, snr_db) # Sending y = hp + n
     if h_est is None:
@@ -56,6 +60,7 @@ def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
     currmse = []
     # Main loop
     while current_index < len(channel_vals) - packet_size:
+        index += 1
         # Data transmission
         data_bits = generate_random_bits(packet_size) # generate data packet [x]
         actual_channel = channel_vals[current_index:current_index + packet_size] # find the vector array [h']
@@ -63,15 +68,16 @@ def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
         
         # Demodulate using previous channel estimate
         h_prev = channel_estimates[-1]
-        demodulated_bits = np.sign(np.real(received_data * np.conjugate(h_prev) / (np.abs(h_prev)**2))) # find [x] which is the least squares approximation to the orginal data
+        demodulated = received_data * np.conjugate(h_prev) / (np.abs(h_prev)**2)
+        demodulated_bits = np.array([1 if np.real(x) > 0 else -1 for x in demodulated])
         
         # Re-estimate channel
-        h_new = estimate_channel(received_data, demodulated_bits)
+        h_new = np.linalg.lstsq(data_bits.reshape(-1, 1), received_data, rcond=None)[0][0]        
         channel_estimates.append(h_new)
+
         # Re-do the demodulation of data
-        demodulated_bits = np.sign(np.real(received_data * np.conjugate(h_new) / (np.abs(h_new)**2))) # find [x] which is the least squares approximation to the orginal data
-        # print(channel_estimates[-2:], h_prev, h_new)
-        # plt.plot(data_bits, label = "data")
+        demodulated = received_data * np.conjugate(h_new) / (np.abs(h_new)**2)
+        demodulated_bits = np.array([1 if np.real(x) > 0 else -1 for x in demodulated])        # plt.plot(data_bits, label = "data")
         # plt.plot(demodulated_bits, label = "demod")
         # plt.plot(actual_channel.real,label = "real channel")
         # plt.plot(actual_channel.imag, label = 'imag channel')
@@ -84,12 +90,19 @@ def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
         bit_errors += errors
         total_data_bits += packet_size
         total_bits += packet_size
+        
+        # print(sign(h_prev), sign(h_new))
+        # plt.plot(data_bits, label = 'original')
+        # plt.plot(demodulated_bits, label='demodulated bits')
+        # plt.show()
+
         # Calculate MSE
         mse = np.abs(h_new - h_prev)**2
         mse_values.append(mse)
-        currmse.append(mse)
-        avgmse = np.mean(currmse)
+        # currmse.append(mse)
+        # avgmse = np.mean(currmse)
         if mse > mse_threshold:
+        # if index == 1:
             # Send new pilot
             h_est, current_index = send_pilot(current_index, pilot_size, snr_db)
             if h_est is None:
@@ -98,6 +111,7 @@ def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
             pilot_indices.append(current_index - pilot_size)
             total_bits += pilot_size
             currmse = []
+            index = 0
         else:
             # Continue with data
             current_index += packet_size
@@ -111,7 +125,7 @@ def run_simulation(snr_db, mse_threshold, packet_size=5, pilot_size=5):
     return pilot_ratio, ber, avg_mse
 
 # Parameter sweep
-snr_values = np.arange(0,50, 5)  # 0 to 30 dB in steps of 5 dB each
+snr_values = np.arange(0,40, 5)  # 0 to 30 dB in steps of 5 dB each
 mse_thresholds = [0.01, 0.05, 0.1, 0.2, 0.5]
 results = {}
 all_metrics = {}
@@ -126,7 +140,10 @@ for threshold in mse_thresholds:
         if result is not None:
             pilot_ratio, ber, avg_mse = result
             pilot_ratios.append(pilot_ratio)
-            bers.append(ber)
+            if ber != 0:
+                bers.append(ber)
+            else:
+                bers.append(1e-6)
             avg_mses.append(avg_mse)
         else:
             pilot_ratios.append(np.nan)
@@ -139,18 +156,27 @@ for threshold in mse_thresholds:
         'avg_mses': avg_mses
     }
 
-# Create plots
-plt.figure(figsize=(15, 6))
+plt.figure(figsize=(20, 6))
 colors = ['b', 'g', 'r', 'c', 'm']
 markers = ['o', 's', '^', 'D', 'v']
 
+# Pilot Ratio Plot
+plt.subplot(1, 3, 1)
+for (threshold, ratios), color, marker in zip(results.items(), colors, markers):
+    plt.plot(snr_values, ratios, f'{color}-{marker}', label=f'MSE Threshold = {threshold}')
+plt.xlabel('SNR (dB)')
+plt.ylabel('Pilot Ratio')
+plt.title('Pilot Ratio vs SNR')
+plt.grid(True)
+plt.legend()
+
+# BER Plot
+plt.subplot(1, 3, 2)
 # Calculate theoretical BER curves
 EbN0Lin = 10**(snr_values / 10)
-theoryBerAWGN = 0.5 * erfc(np.sqrt(EbN0Lin))
 theoryBerRayleigh = 0.5 * (1 - np.sqrt(EbN0Lin / (EbN0Lin + 1)))
 
 # Plot theoretical curves
-#plt.semilogy(snr_values, theoryBerAWGN, 'k--', linewidth=2, label='AWGN Theory')
 plt.semilogy(snr_values, theoryBerRayleigh, 'k:', linewidth=2, label='Rayleigh Theory')
 
 # Plot simulation results
@@ -158,15 +184,27 @@ for threshold, color, marker in zip(mse_thresholds, colors, markers):
     bers = all_metrics[threshold]['bers']
     plt.semilogy(snr_values, bers, f'{color}-{marker}', label=f'MSE Threshold = {threshold}')
 
-plt.xlabel('Eb/N0')
-plt.ylabel('Bit Error Rate')
+plt.xlabel('SNR (dB)')
+plt.ylabel('Bit Error Rate (BER)')
 plt.title('BER vs SNR')
 plt.grid(True)
 plt.legend()
 plt.ylim([1e-5, 0.5])
 
+# MSE Plot
+plt.subplot(1, 3, 3)
+for threshold, color, marker in zip(mse_thresholds, colors, markers):
+    avg_mses = all_metrics[threshold]['avg_mses']
+    plt.plot(snr_values, avg_mses, f'{color}-{marker}', label=f'MSE Threshold = {threshold}')
+
+plt.xlabel('SNR (dB)')
+plt.ylabel('Average MSE')
+plt.title('Average MSE vs SNR')
+plt.grid(True)
+plt.legend()
+
 plt.tight_layout()
-plt.savefig('simulation_results.png', dpi=300, bbox_inches='tight')
+plt.savefig('simulation_results_with_mse.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # Save detailed results to text file
