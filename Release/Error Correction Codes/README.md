@@ -83,7 +83,7 @@ The plot above shows the BER vs SNR plots for different encoding window lengths 
 The plot above shows the BER vs SNR plots for different encoding window lengths for 10000 bits and Fs = 10000 for a correlated Jakes channel
 
 ### Hard and Soft Decision Decoding and accounting for the Fd/Fs ratio
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/SNR_Vs_Eb_3_channel.png)
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_EB_3_channel.png)
 
 The plot above shows the BER vs SNR plots for different channels for Fd = 1 Hz and Fs = 1000000 Hz for 10000 points. Clearly, the Jakes curve lies between the AWGN and the Rayleigh curves at appropriate values of Fd. 
 
@@ -112,7 +112,7 @@ The plot above shows the BER vs Eb/N0 plot for Rayleigh fading channel for 10000
 
 - LDPC decoding with LLRs - the normalized received symbols are used in the Belief Propagation Algorithm and the posterior LLR signs are used to predict the transmitted bits.
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/SNR_Vs_Eb_AWGN_LogBP.png)
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_AWGN_LogBP.png)
 
 The plot above shows the BER vs Eb/N0 plot for AWGN channel with this approach
 
