@@ -118,24 +118,24 @@ The plot above shows the BER vs Eb/N0 plot for AWGN channel with this approach
 
 # LDPC with Encoding and Soft-Input Iterative Decoding using LLRs
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+<img src="/Release/Error%20Correction%20Codes/AWGN_Final2.png" width="45%"> <img src="/Release/Error%20Correction%20Codes/Reference_AWGN.png" width="45%">
 
-The plot above shows the BER vs Eb/N0 plot for an AWGN channel with a rate of 0.5 and codeword length of 648. 
+The plot above on the left shows the BER vs Eb/N0 plot for an AWGN channel with a rate of 0.5 and codeword length of 648. The plot above on the right shows the expected BER vs Eb/N0 behaviour specified in the references. 
 
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/AWGN_Multiple_Lengths.png)
 
 The plot above shows the BER vs Eb/N0 plot for different rates and codeword lengths used for an AWGN channel. 
 
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+<img src="/Release/Error%20Correction%20Codes/Rayleigh_Final.png" width="45%"> <img src="/Release/Error%20Correction%20Codes/Reference_Rayleigh.png" width="45%">
 
-The plot above shows the BER vs Eb/N0 plot for an uncorrelated Rayleigh channel with a rate of 0.5 and codeword length of 1296. 
+The plot above on the left shows the BER vs Eb/N0 plot for an uncorrelated Rayleigh channel with a rate of 0.5 and codeword length of 648. The plot on the right shows the expected Rayleigh plot from the references. 
 
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_EB_3_channel_50Hz.png)
 
-The plot above shows the BER vs Eb/N0 plot for 3 different channels, with a Doppler frequency of 50 Hz and Sampling frequency of 100000 Hz
+For reference, the plot above shows the BER vs Eb/N0 plot for 3 different channels, with a Doppler frequency of 50 Hz and Sampling frequency of 100000 Hz
 
 
 ![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
