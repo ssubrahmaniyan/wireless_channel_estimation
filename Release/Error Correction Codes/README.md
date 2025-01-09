@@ -118,7 +118,7 @@ The plot above shows the BER vs Eb/N0 plot for AWGN channel with this approach
 
 # LDPC with Encoding and Soft-Input Iterative Decoding using LLRs
 
-<img src="/Release/Error%20Correction%20Codes/AWGN_Final2.png" width="50%"> <img src="/Release/Error%20Correction%20Codes/Reference_AWGN.png" width="40%">
+<img src="/Release/Error%20Correction%20Codes/AWGN_Final2.png" width="48%"> <img src="/Release/Error%20Correction%20Codes/Reference_AWGN.png" width="42%">
 
 The plot above on the left shows the BER vs Eb/N0 plot for an AWGN channel with a rate of 0.5 and codeword length of 648. The plot above on the right shows the expected BER vs Eb/N0 behaviour specified in the references - Error Correction Coding by Todd K. Moon. 
 
@@ -128,7 +128,7 @@ The plot above on the left shows the BER vs Eb/N0 plot for an AWGN channel with 
 The plot above shows the BER vs Eb/N0 plot for different rates and codeword lengths used for an AWGN channel. 
 
 
-<img src="/Release/Error%20Correction%20Codes/Rayleigh_Final.png" width="50%"> <img src="/Release/Error%20Correction%20Codes/Reference_Rayleigh.png" width="40%">
+<img src="/Release/Error%20Correction%20Codes/Rayleigh_Final.png" width="49%"> <img src="/Release/Error%20Correction%20Codes/Reference_Rayleigh.png" width="41%">
 
 The plot above on the left shows the BER vs Eb/N0 plot for an uncorrelated Rayleigh channel with a rate of 0.5 and codeword length of 648. The plot on the right shows the expected Rayleigh plot from the references. 
 
