@@ -116,8 +116,40 @@ The plot above shows the BER vs Eb/N0 plot for Rayleigh fading channel for 10000
 
 The plot above shows the BER vs Eb/N0 plot for AWGN channel with this approach
 
+# LDPC with Encoding and Soft-Input Iterative Decoding using LLRs
 
-- SISO Iterative Message Passing Decoder
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+
+The plot above shows the BER vs Eb/N0 plot for an AWGN channel with a rate of 0.5 and codeword length of 648. 
+
+
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+
+The plot above shows the BER vs Eb/N0 plot for different rates and codeword lengths used for an AWGN channel. 
+
+
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+
+The plot above shows the BER vs Eb/N0 plot for an uncorrelated Rayleigh channel with a rate of 0.5 and codeword length of 1296. 
+
+
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+
+The plot above shows the BER vs Eb/N0 plot for 3 different channels, with a Doppler frequency of 50 Hz and Sampling frequency of 100000 Hz
+
+
+![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+
+The plot above shows the BER vs Eb/N0 plot for an correlated Rayleigh channel with a rate of 0.5, Doppler frequency of 50Hz, codeword length of 60 and Sampling frequency of 100000 Hz.
+
+
+
+
+
+
+ 
+
+
 
   
 
