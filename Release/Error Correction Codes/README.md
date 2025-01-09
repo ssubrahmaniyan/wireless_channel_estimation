@@ -120,10 +120,10 @@ The plot above shows the BER vs Eb/N0 plot for AWGN channel with this approach
 
 <img src="/Release/Error%20Correction%20Codes/AWGN_Final2.png" width="45%"> <img src="/Release/Error%20Correction%20Codes/Reference_AWGN.png" width="45%">
 
-The plot above on the left shows the BER vs Eb/N0 plot for an AWGN channel with a rate of 0.5 and codeword length of 648. The plot above on the right shows the expected BER vs Eb/N0 behaviour specified in the references. 
+The plot above on the left shows the BER vs Eb/N0 plot for an AWGN channel with a rate of 0.5 and codeword length of 648. The plot above on the right shows the expected BER vs Eb/N0 behaviour specified in the references - Error Correction Coding by Todd K. Moon. 
 
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/AWGN_Multiple_Lengths.png)
+<img src="/Release/Error%20Correction%20Codes/AWGN_Multiple_Lengths.png" width="85%">
 
 The plot above shows the BER vs Eb/N0 plot for different rates and codeword lengths used for an AWGN channel. 
 
