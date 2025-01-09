@@ -137,13 +137,12 @@ The plot above on the left shows the BER vs Eb/N0 plot for an uncorrelated Rayle
 
 The plot above shows the BER vs Eb/N0 plot for an uncorrelated Rayleigh channel with rate of 0.50 and codeword length of 2040
 
-
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_EB_3_channel_50Hz.png)
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_EB_3_channel_50Hz.png" width="49%">
 
 For reference, the plot above shows the BER vs Eb/N0 plot for 3 different channels, with a Doppler frequency of 50 Hz and Sampling frequency of 100000 Hz
 
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+<img src="/Release/Error%20Correction%20Codes/Jakes_10Hz.png" width="49%">
 
 The plot above shows the BER vs Eb/N0 plot for an correlated Rayleigh channel with a rate of 0.5, Doppler frequency of 50Hz, codeword length of 60 and Sampling frequency of 100000 Hz.
 
