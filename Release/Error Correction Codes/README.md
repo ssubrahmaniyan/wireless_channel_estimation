@@ -123,7 +123,7 @@ The plot above shows the BER vs Eb/N0 plot for AWGN channel with this approach
 The plot above on the left shows the BER vs Eb/N0 plot for an AWGN channel with a rate of 0.5 and codeword length of 648. The plot above on the right shows the expected BER vs Eb/N0 behaviour specified in the references - Error Correction Coding by Todd K. Moon. 
 
 
-<img src="/Release/Error%20Correction%20Codes/AWGN_Multiple_Lengths.png" width="70%">
+<img src="/Release/Error%20Correction%20Codes/AWGN_Multiple_Lengths.png" width="60%">
 
 The plot above shows the BER vs Eb/N0 plot for different rates and codeword lengths used for an AWGN channel. 
 
@@ -131,6 +131,11 @@ The plot above shows the BER vs Eb/N0 plot for different rates and codeword leng
 <img src="/Release/Error%20Correction%20Codes/Rayleigh_Final.png" width="49%"> <img src="/Release/Error%20Correction%20Codes/Reference_Rayleigh.png" width="41%">
 
 The plot above on the left shows the BER vs Eb/N0 plot for an uncorrelated Rayleigh channel with a rate of 0.5 and codeword length of 648. The plot on the right shows the expected Rayleigh plot from the references. 
+
+
+<img src="/Release/Error%20Correction%20Codes/Rayleigh_Ideal.png" width="49%">
+
+The plot above shows the BER vs Eb/N0 plot for an uncorrelated Rayleigh channel with rate of 0.50 and codeword length of 2040
 
 
 ![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_EB_3_channel_50Hz.png)
