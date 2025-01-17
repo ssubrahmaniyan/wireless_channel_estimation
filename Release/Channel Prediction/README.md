@@ -18,10 +18,10 @@ An evaluation metric to evaluate the performance of the VAR model is to compute 
 I also need to edit the code to train the VAR model on all the estimated channel values, rather than the channel values that are correctly (i.e. MSE is within the threshold) predicted, and observe the results. 
 
 ### Plots
-<img src="/Release/Error%20Correction%20Codes/Retransmission_Freq_Vs_Doppler_VAR.png" width="49%">
+<img src="/Release/Channel%20Prediction/Retransmission_Freq_Vs_Doppler_VAR.png" width="49%">
 The plot above shows the behaviour of the VAR model characterized by the Retransmission Frequency computed as above, plotted against the Doppler frequency. Note that as the Doppler frequency increases, the channel values become harder to predict and the need to retransmit haders increases. Note also that this is at a fixed threshold of MSE. 
 
-<img src="/Release/Error%20Correction%20Codes/Retransmission_Freq_Vs_Doppler_VAR_Thresholds.png" width="49%">
+<img src="/Release/Channel%20Prediction/Retransmission_Freq_Vs_Doppler_VAR_Thresholds.png" width="49%">
 This plot examines the performance of the VAR model for a correlated Rayleigh channel with Jakes spectrum at different MSE thresholds from 0.01 to 0.1, and clearly the retransmissions increase at a given Doppler frequency for a lower MSE threshold. 
 
 The notebook Channel_Estimation_Pipeline_outputs.ipynb contains code to reproduce these outputs from scratch, and I need to fix the last plot generated in the notebook relating to BER Vs SNR. 
@@ -32,7 +32,7 @@ LDPC coding will increase the accuracy of the decoding process. For reference, t
 
 The plot below describes the coding gains obtained for the following parameters: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296
 
-<img src="/Release/Error%20Correction%20Codes/Jakes_Rayleigh.png" width="49%">
+<img src="/Release/Channel%20Predicion/Jakes_Rayleigh.png" width="49%">
 
 
 
