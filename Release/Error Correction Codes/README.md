@@ -33,27 +33,27 @@ Parameters:
 The effect of coding on different channels, provided we know the channel, has been examined below. Note that the rate is defined by k/n, and not by d_v/d_c. 
 
 ### Plots
-![BER Vs SNR Plot1](/Release/Error%20Correction%20Codes/BER_Vs_Eb_AWGN_Coding.png)
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_Eb_AWGN_Coding.png" width="49%">
 
 The plot above shows the BER Vs SNR characteristic for an AWGN channel where we assume we know the channel.  
 
 
-![BER Vs SNR Plot2](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_Coding.png)
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_Coding.png" width="49%">
 
 The plot above shows the BER Vs SNR characteristic for an uncorrelated Rayleigh channel where we assume we know the channel.
 
 
-![BER Vs SNR Plot3](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Jakes_Coding.png)
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_Eb_Jakes_Coding.png" width="49%">
 
 The plot above shows the BER Vs SNR characteristic for a correlated Rayleigh channel where we assume we know the channel, for 100000 bits and Fs = 100000.
 
 
-![BER Vs SNR Plot4](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Jakes_Coding2.png)
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_Eb_Jakes_Coding2.png" width="49%">
 
 The plot above shows the BER Vs SNR characteristic for a correlated Rayleigh channel where we assume we know the channel, for 10000 bits and Fs = 10000.
 
 
-![BER Vs SNR Plot0](/Release/Error%20Correction%20Codes/BER_Vs_SNR.png)
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_SNR.png" width="49%">
 
 For reference, the plot above shows the BER Vs SNR characteristic for 3 different channel types without coding. The results suggest that the Jakes method being suggested is very similar to a typical Rayleigh channel generator. This needs to be discussed. 
 
@@ -74,16 +74,16 @@ The plots below show the variation in coding gain for different encoding window 
 
 ### Plots for variable encoding window length
 
-![BER Vs SNR Plot0n](/Release/Error%20Correction%20Codes/SNR_Vs_Eb_AWGN_Nvals.png)
+<img src="/Release/Error%20Correction%20Codes/SNR_Vs_Eb_AWGN_Nvals.png" width="49%">
 
 The plot above shows the BER vs SNR plots for different encoding window lengths for 10000 bits and Fs = 10000 for a AWGN channel
 
-![BER Vs SNR Plot1n](/Release/Error%20Correction%20Codes/SNR_Vs_Eb_Jakes_Nvals.png)
+<img src="/Release/Error%20Correction%20Codes/SNR_Vs_Eb_Jakes_Nvals.png" width="49%">
 
 The plot above shows the BER vs SNR plots for different encoding window lengths for 10000 bits and Fs = 10000 for a correlated Jakes channel
 
 ### Hard and Soft Decision Decoding and accounting for the Fd/Fs ratio
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_EB_3_channel.png)
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_EB_3_channel.png" width="49%">
 
 The plot above shows the BER vs SNR plots for different channels for Fd = 1 Hz and Fs = 1000000 Hz for 10000 points. Clearly, the Jakes curve lies between the AWGN and the Rayleigh curves at appropriate values of Fd. 
 
@@ -98,21 +98,22 @@ Approaches tried out:
 </div> 
 LLR > 0 implies that the bit is 0, and LLR < 0 implies that the bit is 1. This approach is practically the same as a hard decision decoder. 
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_LLR.png)
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_LLR.png" width="49%">
 
 The plot above shows the BER vs Eb/N0 plot for Rayleigh fading channel for 10000 bits with this approach. 
 
 
 - Computing sum of squared error between normalized recieved symbols and all possible transmitted symbols whose encoded versions have the least MSE with the received normalized symbol vector - highly inefficient and does not scale with k. The paper cited above only suggests a way to speed it up on hardware. 
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png)
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_Eb_Ray_MSE.png" width="49%">
 
 The plot above shows the BER vs Eb/N0 plot for Rayleigh fading channel for 10000 bits with this approach. 
 
 
 - LDPC decoding with LLRs - the normalized received symbols are used in the Belief Propagation Algorithm and the posterior LLR signs are used to predict the transmitted bits.
 
-![BER Vs SNR Plot2n](/Release/Error%20Correction%20Codes/BER_Vs_Eb_AWGN_LogBP.png)
+
+<img src="/Release/Error%20Correction%20Codes/BER_Vs_Eb_AWGN_LogBP.png" width="49%">
 
 The plot above shows the BER vs Eb/N0 plot for AWGN channel with this approach
 
