@@ -34,6 +34,10 @@ The plot below describes the coding gains obtained for the following parameters:
 
 <img src="/Release/Channel%20Prediction/Jakes_Rayleigh.png" width="49%">
 
+The plot below descirbes the coding gains obtained for the following parameters: Fs = 100000 Hz, Fd = 100 Hz, N = 10000000, LDPC Block length = 648
+
+<img src="/Release/Channel%20Prediction/Jakes_Rayleigh2.png" width="49%">
+
 
 
 
