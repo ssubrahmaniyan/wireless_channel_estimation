@@ -32,7 +32,7 @@ LDPC coding will increase the accuracy of the decoding process. For reference, t
 
 The plot below describes the coding gains obtained for the following parameters: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296
 
-<img src="/Release/Channel%20Predicion/Jakes_Rayleigh.png" width="49%">
+<img src="/Release/Channel%20Prediction/Jakes_Rayleigh.png" width="49%">
 
 
 
