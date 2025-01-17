@@ -26,3 +26,14 @@ This plot examines the performance of the VAR model for a correlated Rayleigh ch
 
 The notebook Channel_Estimation_Pipeline_outputs.ipynb contains code to reproduce these outputs from scratch, and I need to fix the last plot generated in the notebook relating to BER Vs SNR. 
 
+# Channel Prediction with Autoregressive models and LDPC coding
+
+LDPC coding will increase the accuracy of the decoding process. For reference, the gains observed for a correlated Rayleigh channel are given below:
+
+The plot below describes the coding gains obtained for the following parameters: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296
+
+<img src="/Release/Error%20Correction%20Codes/Jakes_Rayleigh.png" width="49%">
+
+
+
+
