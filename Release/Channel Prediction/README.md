@@ -42,6 +42,15 @@ The plot below descirbes the coding gains obtained for the following parameters:
 
 <img src="/Release/Channel%20Prediction/Jakes_Rayleigh3.png" width="49%">
 
+Approaches evaluated for predicting channel values:
+- Running the simulation bit-by-bit as done in previous AR simulations
+- Using smaller block lengths with custom parity check matrices - led to poor demodulation results for standard channels
+- Using specific block lengths in pilot and data packet transmission, training the VAR on the least squares estimate of a sequence of channel values.
+
+The plot below descirbes the coding gains obtained for the following parameters: Fs = 10000 Hz, Fd = 15.43 Hz, N = 10000000, LDPC Block length = 648
+
+<img src="/Release/Channel%20Prediction/Jakes_AR.png" width="49%">
+
 
 
 
