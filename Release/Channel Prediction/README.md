@@ -51,6 +51,10 @@ The plot below descirbes the coding gains obtained for the following parameters:
 
 <img src="/Release/Channel%20Prediction/Jakes_AR.png" width="49%">
 
+To do:
+1. Explore alternative Fs, Fd and Block length combinations
+2. VAR model training, order
+
 
 
 
