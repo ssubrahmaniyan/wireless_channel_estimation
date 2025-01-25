@@ -51,9 +51,23 @@ The plot below descirbes the coding gains obtained for the following parameters:
 
 <img src="/Release/Channel%20Prediction/Jakes_AR.png" width="49%">
 
-To do:
-1. Explore alternative Fs, Fd and Block length combinations
-2. VAR model training, order
+The plot below describes the coding gains obtained for the following parameters: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296. This block length was chosen to ensure that several coherence times are spanned for a wide range of Doppler frequencies and also because of the quality of codes available at this length. 
+
+<img src="/Release/Channel%20Prediction/Jakes_Rayleigh.png" width="49%">
+
+The plot below describes the channel variation for the above mentioned parameters: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296. It shows the accuracy of the VAR model in MATLAB in predicting the channel values given sufficient training data (order 25, 200 actual samples being trained on)
+
+<img src="/Release/Channel%20Prediction/10000_10_10000000.png" width="49%">
+
+The plot below describes the AR uncoded and coded performance in comparision to the Rayleigh uncoded plot, for the parameters given here: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296, order 25, 200 samples being trained on initially. 
+
+Issues faced in using alist format codes:
+1. Conversion from alist to MATLAB sparse parity check matrices is completed
+2. Since my codes run for specific block lengths, I attempted to use ldpcEncode and ldpcDecode functions from MATLAB.
+3. Performance on different combinations of Fs, Fd and parity check matrices was very poor, and on Mackay codes, an error was raised saying the dimensions of the codes are incorrect. 
+4. Need to check the format of the H matrices needed for the MATLAB defined functions. 
+
+
 
 
 
