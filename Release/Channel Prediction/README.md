@@ -51,15 +51,13 @@ The plot below descirbes the coding gains obtained for the following parameters:
 
 <img src="/Release/Channel%20Prediction/Jakes_AR.png" width="49%">
 
-The plot below describes the coding gains obtained for the following parameters: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296. This block length was chosen to ensure that several coherence times are spanned for a wide range of Doppler frequencies and also because of the quality of codes available at this length. 
+The plot below describes the coding gains obtained for the following parameters: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296, as obtained before. This block length was chosen to ensure that several coherence times are spanned for a wide range of Doppler frequencies and also because of the quality of codes available at this length. 
 
 <img src="/Release/Channel%20Prediction/Jakes_Rayleigh.png" width="49%">
 
 The plot below describes the channel variation for the above mentioned parameters: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296. It shows the accuracy of the VAR model in MATLAB in predicting the channel values given sufficient training data (order 25, 200 actual samples being trained on)
 
 <img src="/Release/Channel%20Prediction/10000_10_10000000.png" width="49%">
-
-The plot below describes the AR uncoded and coded performance in comparision to the Rayleigh uncoded plot, for the parameters given here: Fs = 100000 Hz, Fd = 10 Hz, N = 10000000, LDPC Block length = 1296, order 25, 200 samples being trained on initially. 
 
 Issues faced in using alist format codes:
 1. Conversion from alist to MATLAB sparse parity check matrices is completed
