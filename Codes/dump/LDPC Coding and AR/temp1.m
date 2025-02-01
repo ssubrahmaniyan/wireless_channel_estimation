@@ -1,0 +1,47 @@
+% Read channel values from file
+N = 10000000; % Total number of points
+channel_values = complex(zeros(N, 1)); % Preallocate complex array
+fid = fopen('channels.txt', 'r');
+for i = 1:N
+    line = fgetl(fid);
+    if ischar(line)
+        values = jsondecode(line);
+        channel_values(i) = complex(values(1), values(2));
+    end
+end
+fclose(fid);
+
+% Prepare data for VAR model
+training_length = 200;
+var_order = 25;
+prediction_length = 1296;
+
+% Extract training data and convert to VAR format
+channel_data = [real(channel_values(1:training_length)), imag(channel_values(1:training_length))];
+
+% Create and train VAR model
+mdl = varm(2, var_order);
+mdl = estimate(mdl, channel_data);
+
+% Generate predictions
+[Y_pred, ~] = forecast(mdl, prediction_length, channel_data);
+
+% Convert predictions back to complex numbers
+predicted_values = complex(Y_pred(:,1), Y_pred(:,2));
+
+% Create plot
+figure;
+% Plot original data
+plot(1:2000, real(channel_values(1:2000)), 'b-', 'DisplayName', 'Real Part');
+hold on;
+plot(1:2000, imag(channel_values(1:2000)), 'r-', 'DisplayName', 'Imaginary Part');
+
+% Plot predictions
+plot(training_length:training_length+prediction_length-1, real(predicted_values), 'g-*', 'LineWidth', 2, 'DisplayName', 'Predicted Real Part');
+plot(training_length:training_length+prediction_length-1, imag(predicted_values), 'm-*', 'LineWidth', 2, 'DisplayName', 'Predicted Imaginary Part');
+
+grid on;
+title('Channel Real and Imaginary Parts with VAR Predictions');
+xlabel('Sample Index');
+ylabel('Amplitude');
+legend;
