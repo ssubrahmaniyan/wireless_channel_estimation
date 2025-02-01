@@ -1,16 +1,15 @@
+% Main script for comparing all approaches
 clear all;
 close all;
 
-% Paameters
-block_length = 648; % Block length
-rate = 1/2; % Code rate
-max_iter = 50; % Maximum number of decoding iterations
-EbNo_dB = -1:1:13; % Eb/No values in dB
+% Common Parameters
+EbNo_dB = -1:0.5:20;
+N = 10000000;  % Total channel samples
 max_frames = 100;
+code_rate = 1/2;
 
-% Read channel values from file
-N = 10000000;  % Total number of points
-channel_values = complex(zeros(N, 1));  % Preallocate complex array
+% Load Jakes channel
+channel_values = complex(zeros(N, 1));
 fid = fopen('channels.txt', 'r');
 for i = 1:N
     line = fgetl(fid);
@@ -21,177 +20,67 @@ for i = 1:N
 end
 fclose(fid);
 
-% Initialize LDPC code
-ldpc = LDPCCode(block_length, block_length * rate);
-ldpc.load_wifi_ldpc(block_length, rate);
+% Parameters
+block_length = 324;  % Changed from 648 to 324 (uncoded block length)
+rate = 1/2; % Code rate
+max_iter = 50; % Maximum number of decoding iterations
+var_order = 25;
+pilot_block_size = block_length;  % Using block_length directly
+num_initial_pilots = 2*var_order + 2;
+mse_threshold = 0.1;
 
-% Preallocate BER arrays
+% Initialize LDPC code
+ldpc = LDPCCode(2*block_length, block_length);  % Changed to use 2*block_length for N
+ldpc.load_wifi_ldpc(2*block_length, rate);
+
+% Initialize BER arrays
 BER_coded = zeros(size(EbNo_dB));
 BER_uncoded1 = zeros(size(EbNo_dB));
 BER_uncoded2 = zeros(size(EbNo_dB));
-
-% Convert Eb/No to SNR
-snr_db_vec = EbNo_dB + 10*log10(rate);
-
-% Track current position in channel values
-current_index = 1;
-
-% Loop over Eb/No values
-for i = 1:length(EbNo_dB)
-    fprintf('Simulating Eb/No = %.1f dB\n', EbNo_dB(i));
-    SNR_linear = 10^(snr_db_vec(i)/10);
-    noise_var = 1 / (2 * rate * SNR_linear);
-    snr = 10^(snr_db_vec(i)/10);
-    
-    bit_errors_coded = 0;
-    total_bits_coded = 0;
-    bit_errors_uncoded1 = 0;
-    total_bits_uncoded1 = 0;
-    bit_errors_uncoded2 = 0;
-    total_bits_uncoded2 = 0;
-    frame = 0;
-    
-    while (frame < max_frames && current_index + 2*block_length <= length(channel_values))
-        frame = frame + 1;
-        
-        %% Coded Transmission
-        % Generate random information bits
-        info_bits_coded = randi([0, 1], ldpc.K, 1);
-        
-        % Encode the bits
-        codeword = ldpc.encode_bits(info_bits_coded);
-        
-        % BPSK modulation
-        symbols_coded = 1 - 2 * codeword;
-        
-        % Get channel values for this frame
-        channel_coded = channel_values(current_index:current_index + ldpc.N - 1);
-        current_index = current_index + ldpc.N;
-        
-        % Generate complex noise
-        noise_coded = sqrt(noise_var/2) * (randn(ldpc.N, 1) + 1j * randn(ldpc.N, 1));
-        
-        % Pass through channel with noise
-        received_coded = channel_coded .* symbols_coded + noise_coded/sqrt(snr);
-        
-        % Compute LLRs
-        llr_coded = real(2 * conj(channel_coded) .* received_coded ./ (abs(channel_coded).^2 * noise_var));
-        
-        % Decode using LDPC
-        decoded_codeword = ldpc.decode_llr(llr_coded, max_iter, true);
-        
-        % Count bit errors for coded transmission
-        bit_errors_coded = bit_errors_coded + sum(decoded_codeword(1:ldpc.K) ~= info_bits_coded);
-        total_bits_coded = total_bits_coded + ldpc.K;
-        
-        %% Uncoded Transmission 1
-        SNR_linear = 10^(EbNo_dB(i)/10);
-        noise_var = 1 / (2 * SNR_linear);
-        % Generate random information bits
-        info_bits_uncoded = randi([0, 1], block_length, 1);
-        
-        % BPSK modulation
-        symbols_uncoded = 1 - 2 * info_bits_uncoded;
-        
-        % Get channel values for this frame
-        channel_uncoded = channel_values(current_index:current_index + block_length - 1);
-        current_index = current_index + block_length;
-        
-        % Generate complex noise
-        noise_uncoded = sqrt(noise_var/2) * (randn(block_length, 1) + 1j * randn(block_length, 1));
-        
-        % Pass through channel with noise
-        received_uncoded = channel_uncoded .* symbols_uncoded + noise_uncoded/sqrt(SNR_linear);
-        
-        % Hard decision decoding
-        decoded_uncoded = real(received_uncoded ./ channel_uncoded) < 0;
-        
-        % Count bit errors for uncoded transmission
-        bit_errors_uncoded1 = bit_errors_uncoded1 + sum(decoded_uncoded ~= info_bits_uncoded);
-        total_bits_uncoded1 = total_bits_uncoded1 + block_length;
-
-        %%Uncoded Transmission 2
-        % Generate random information bits
-        info_bits_uncoded = randi([0, 1], block_length, 1);
-
-        % BPSK modulation
-        symbols_uncoded = 1 - 2 * info_bits_uncoded;
-
-        % Generate Rayleigh channel and complex noise
-        channel_uncoded = sqrt(0.5) * (randn(block_length, 1) + 1j * randn(block_length, 1));
-        noise_uncoded = sqrt(1 / 2) * (randn(block_length, 1) + 1j * randn(block_length, 1));
-
-        % Pass through channel with noise
-        received_uncoded = channel_uncoded .* symbols_uncoded + (noise_uncoded/sqrt(SNR_linear));
-
-        % Hard decision decoding using real part
-        decoded_uncoded = real(received_uncoded ./ channel_uncoded) < 0;
-
-        % Count bit errors for uncoded transmission
-        bit_errors_uncoded2 = bit_errors_uncoded2 + sum(decoded_uncoded ~= info_bits_uncoded);
-        total_bits_uncoded2 = total_bits_uncoded2 + block_length;
-        
-        % Print progress every 1000 frames
-        if mod(frame, 1000) == 0
-            fprintf('Frame %d: Coded BER = %.2e, Uncoded BER = %.2e\n', ...
-                frame, bit_errors_coded/total_bits_coded, bit_errors_uncoded1/total_bits_uncoded1);
-        end
-    end
-    
-    % Reset channel index for next SNR point
-    current_index = 1;
-    
-    % Calculate BER for the current Eb/No value
-    BER_coded(i) = bit_errors_coded / total_bits_coded;
-    BER_uncoded1(i) = bit_errors_uncoded1 / total_bits_uncoded1;
-    BER_uncoded2(i) = bit_errors_uncoded2 / total_bits_uncoded2;
-end
-
-% Now initialize arrays for AR simulation
 BER_ar_uncoded = zeros(size(EbNo_dB));
 BER_ar_coded = zeros(size(EbNo_dB));
 retrans_freq_uncoded = zeros(size(EbNo_dB));
 retrans_freq_coded = zeros(size(EbNo_dB));
 
-% AR parameters
-var_order = 10;
-num_initial_pilots = 4*var_order + 2;
-mse_threshold = 0.1;
-
-% Run AR simulations
+% Main simulation loop
 for i = 1:length(EbNo_dB)
-    fprintf('Simulating AR for Eb/No = %.1f dB\n', EbNo_dB(i));
+    fprintf('Simulating Eb/No = %.1f dB\n', EbNo_dB(i));
     
+    % Standard Jakes simulations (from LDPC_Jakes.m)
+    [BER_coded(i), BER_uncoded1(i), BER_uncoded2(i)] = simulateJakes(channel_values, ...
+        EbNo_dB(i), max_frames, ldpc);
+    
+    % AR Model simulations
     [retrans_freq_uncoded(i), BER_ar_uncoded(i)] = simulateAR(channel_values, ...
-        false, block_length, var_order, mse_threshold, num_initial_pilots, EbNo_dB(i), ldpc);
+        false, pilot_block_size, var_order, mse_threshold, num_initial_pilots, EbNo_dB(i), ldpc);
     
     [retrans_freq_coded(i), BER_ar_coded(i)] = simulateAR(channel_values, ...
-        true, block_length, var_order, mse_threshold, num_initial_pilots, EbNo_dB(i), ldpc);
+        true, pilot_block_size, var_order, mse_threshold, num_initial_pilots, EbNo_dB(i), ldpc);
 end
 
-% Plot all results
+% Plotting
 figure(1);
-semilogy(EbNo_dB, BER_coded, '-o', 'LineWidth', 2, 'DisplayName', 'Coded');
+semilogy(EbNo_dB, BER_coded, 'k-o', 'DisplayName', 'Coded Jakes');
 hold on;
-semilogy(EbNo_dB, BER_uncoded1, '-s', 'LineWidth', 2, 'DisplayName', 'Uncoded 1');
-semilogy(EbNo_dB, BER_uncoded2, '-s', 'LineWidth', 2, 'DisplayName', 'Uncoded 2');
-semilogy(EbNo_dB, BER_ar_uncoded, '-v', 'LineWidth', 2, 'DisplayName', 'AR Uncoded');
-semilogy(EbNo_dB, BER_ar_coded, '-d', 'LineWidth', 2, 'DisplayName', 'AR Coded');
+semilogy(EbNo_dB, BER_uncoded1, 'b-s', 'DisplayName', 'Uncoded Jakes');
+semilogy(EbNo_dB, BER_uncoded2, 'r-^', 'DisplayName', 'Uncoded Rayleigh');
+semilogy(EbNo_dB, BER_ar_uncoded, 'm-v', 'DisplayName', 'AR Uncoded');
+semilogy(EbNo_dB, BER_ar_coded, 'g-d', 'DisplayName', 'AR Coded');
 grid on;
-xlabel('Eb/No (dB)');
+xlabel('E_b/N_0 (dB)');
 ylabel('Bit Error Rate (BER)');
-title('BER vs Eb/No for Coded and Uncoded Transmission');
-legend show;
+title('BER Performance Comparison');
+legend('Location', 'southwest');
 
 figure(2);
-plot(EbNo_dB, retrans_freq_uncoded, '-o', 'DisplayName', 'AR Uncoded');
+plot(EbNo_dB, retrans_freq_uncoded, 'r-o', 'DisplayName', 'AR Uncoded');
 hold on;
-plot(EbNo_dB, retrans_freq_coded, '-s', 'DisplayName', 'AR Coded');
+plot(EbNo_dB, retrans_freq_coded, 'b-s', 'DisplayName', 'AR Coded');
 grid on;
-xlabel('Eb/No (dB)');
+xlabel('E_b/N_0 (dB)');
 ylabel('Retransmission Frequency');
 title('Pilot Retransmission Frequency');
-legend show;
+legend('Location', 'northeast');
 
 % Helper function for AR simulation
 function [retrans_freq, ber] = simulateAR(channel_values, use_coding, block_size, ...
@@ -201,33 +90,16 @@ function [retrans_freq, ber] = simulateAR(channel_values, use_coding, block_size
     current_idx = 1;
     total_bits = 0;
     wrong_bits = 0;
-    pilot_bits = 0;
-    
-    % Calculate maximum possible advance in one iteration
-    initial_bits = num_initial_pilots * block_size;
-    if use_coding
-        max_block_size = 2*block_size;
-    else
-        max_block_size = block_size;
-    end
-    max_advance = max(max_block_size, initial_bits);
+    pilot_requests = 0;
     
     % Get initial channel estimates
+    initial_bits = num_initial_pilots * block_size;
     channel_estimates = getInitialEstimates(channel_values, current_idx, ...
         num_initial_pilots, block_size, EbNo_dB);
     current_idx = current_idx + initial_bits;
-    pilot_bits = pilot_bits + initial_bits;
+    pilot_requests = pilot_requests + 1;
     
-    % Convert Eb/No to SNR
-    if use_coding
-        snr_db = EbNo_dB + 10*log10(1/2);  % Add coding rate adjustment
-    else
-        snr_db = EbNo_dB;
-    end
-    SNR = 10^(snr_db/10);
-    noise_var = 1/(2*SNR);
-    
-    while current_idx + max_advance <= length(channel_values)
+    while current_idx + block_size <= length(channel_values)
         % Train VAR model
         channel_data = [real(channel_estimates), imag(channel_estimates)];
         mdl = varm(2, var_order);
@@ -239,12 +111,10 @@ function [retrans_freq, ber] = simulateAR(channel_values, use_coding, block_size
         
         if use_coding
             [wrong_bits_block, hnought] = processCodedBlock(channel_values, current_idx, ...
-                htilde, block_size, snr_db, ldpc);
-            current_block_size = 2*block_size;
+                htilde, block_size, EbNo_dB, ldpc);
         else
             [wrong_bits_block, hnought] = processUncodedBlock(channel_values, current_idx, ...
                 htilde, block_size, EbNo_dB);
-            current_block_size = block_size;
         end
         
         % Check MSE
@@ -255,18 +125,17 @@ function [retrans_freq, ber] = simulateAR(channel_values, use_coding, block_size
             channel_estimates = getInitialEstimates(channel_values, current_idx, ...
                 num_initial_pilots, block_size, EbNo_dB);
             current_idx = current_idx + initial_bits;
-            pilot_bits = pilot_bits + initial_bits;
+            pilot_requests = pilot_requests + 1;
         else
             % Update and continue
             channel_estimates = [channel_estimates(2:end); hnought];
             wrong_bits = wrong_bits + wrong_bits_block;
-            total_bits = total_bits + current_block_size;
-            current_idx = current_idx + current_block_size;
+            total_bits = total_bits + block_size;
+            current_idx = current_idx + block_size;
         end
     end
     
-    % Calculate retransmission frequency (should be ≤ 1)
-    retrans_freq = pilot_bits / (pilot_bits + total_bits);
+    retrans_freq = pilot_requests * initial_bits / total_bits;
     ber = wrong_bits / total_bits;
 end
 
@@ -304,18 +173,18 @@ function [wrong_bits, hnought] = processCodedBlock(channel_values, current_idx, 
     SNR = 10^(snr_db/10);
     noise_var = 1/(2*SNR);
     
-    % Generate random information bits - use ldpc.K for correct size
-    info_bits = randi([0 1], ldpc.K, 1);  % Changed from block_size to ldpc.K
+    % Generate random information bits
+    info_bits = randi([0 1], block_size, 1);  % Now block_size is 324
     
     % Encode using LDPC
-    coded_bits = ldpc.encode_bits(info_bits);  % Will produce ldpc.N bits
+    coded_bits = ldpc.encode_bits(info_bits);  % Will produce 648 bits
     symbols = 1 - 2*coded_bits;
     
     % Get actual channel values for full coded block
-    actual_channel = channel_values(current_idx:current_idx+ldpc.N-1);  % Changed to ldpc.N
+    actual_channel = channel_values(current_idx:current_idx+2*block_size-1);  % Changed to 2*block_size
     
     % Add noise
-    noise = sqrt(noise_var/2) * (randn(ldpc.N,1) + 1j*randn(ldpc.N,1));  % Changed size to ldpc.N
+    noise = sqrt(noise_var/2) * (randn(2*block_size,1) + 1j*randn(2*block_size,1));  % Changed size
     received = actual_channel.*symbols + noise;
     
     % Compute LLRs using predicted channel
@@ -325,7 +194,7 @@ function [wrong_bits, hnought] = processCodedBlock(channel_values, current_idx, 
     decoded_bits = ldpc.decode_llr(llr, 50, true);
     
     % Count errors (only in information bits)
-    wrong_bits = sum(decoded_bits(1:ldpc.K) ~= info_bits);
+    wrong_bits = sum(decoded_bits(1:block_size) ~= info_bits);
     
     % Re-estimate channel using decoded bits
     hnought = mean(received./(1-2*coded_bits));
@@ -355,5 +224,83 @@ function [wrong_bits, hnought] = processUncodedBlock(channel_values, current_idx
     
     % Re-estimate channel using decisions
     hnought = mean(received./(1-2*decisions));
+end
+
+function [ber_coded, ber_uncoded1, ber_uncoded2] = simulateJakes(channel_values, EbNo_dB, max_frames, ldpc)
+    % Initialize counters
+    bit_errors_coded = 0;
+    total_bits_coded = 0;
+    bit_errors_uncoded1 = 0;
+    total_bits_uncoded1 = 0;
+    bit_errors_uncoded2 = 0;
+    total_bits_uncoded2 = 0;
+    
+    % Parameters
+    block_length = ldpc.K;  % This is now 324
+    rate = 1/2;
+    current_index = 1;
+    
+    % Convert Eb/No to SNR
+    snr_db_coded = EbNo_dB + 10*log10(rate);
+    SNR_coded = 10^(snr_db_coded/10);
+    noise_var_coded = 1/(2*SNR_coded);
+    
+    SNR_uncoded = 10^(EbNo_dB/10);
+    noise_var_uncoded = 1/(2*SNR_uncoded);
+    
+    for frame = 1:max_frames
+        if current_index + 2*block_length > length(channel_values)
+            break;
+        end
+        
+        % Coded transmission
+        info_bits = randi([0 1], ldpc.K, 1);
+        codeword = ldpc.encode_bits(info_bits);
+        symbols = 1 - 2*codeword;
+        
+        channel = channel_values(current_index:current_index + ldpc.N - 1);
+        noise = sqrt(noise_var_coded/2) * (randn(ldpc.N,1) + 1j*randn(ldpc.N,1));
+        received = channel.*symbols + noise;
+        
+        llr = 2*real(conj(channel).*received)./(abs(channel).^2 * noise_var_coded);
+        decoded = ldpc.decode_llr(llr, 50, true);
+        
+        bit_errors_coded = bit_errors_coded + sum(decoded(1:ldpc.K) ~= info_bits);
+        total_bits_coded = total_bits_coded + ldpc.K;
+        
+        current_index = current_index + ldpc.N;
+        
+        % Uncoded transmission 1 (with Jakes channel)
+        info_bits = randi([0 1], block_length, 1);
+        symbols = 1 - 2*info_bits;
+        
+        channel = channel_values(current_index:current_index + block_length - 1);
+        noise = sqrt(noise_var_uncoded/2) * (randn(block_length,1) + 1j*randn(block_length,1));
+        received = channel.*symbols + noise;
+        
+        decisions = real(received./channel) < 0;
+        
+        bit_errors_uncoded1 = bit_errors_uncoded1 + sum(decisions ~= info_bits);
+        total_bits_uncoded1 = total_bits_uncoded1 + block_length;
+        
+        current_index = current_index + block_length;
+        
+        % Uncoded transmission 2 (with Rayleigh channel)
+        info_bits = randi([0 1], block_length, 1);
+        symbols = 1 - 2*info_bits;
+        
+        channel = sqrt(0.5) * (randn(block_length,1) + 1j*randn(block_length,1));
+        noise = sqrt(noise_var_uncoded/2) * (randn(block_length,1) + 1j*randn(block_length,1));
+        received = channel.*symbols + noise;
+        
+        decisions = real(received./channel) < 0;
+        
+        bit_errors_uncoded2 = bit_errors_uncoded2 + sum(decisions ~= info_bits);
+        total_bits_uncoded2 = total_bits_uncoded2 + block_length;
+    end
+    
+    ber_coded = bit_errors_coded / total_bits_coded;
+    ber_uncoded1 = bit_errors_uncoded1 / total_bits_uncoded1;
+    ber_uncoded2 = bit_errors_uncoded2 / total_bits_uncoded2;
 end
 

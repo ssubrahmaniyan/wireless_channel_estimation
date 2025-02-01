@@ -24,6 +24,7 @@ classdef LDPCCode < handle
             obj.M = obj.N - obj.K;
         end
         
+        
         function generate_Gallager_LDPC(obj)
             obj.H = zeros(obj.M, obj.N);
             w_r = 6;
@@ -203,7 +204,57 @@ classdef LDPCCode < handle
             
         end
         
+       
+        function load_custom_ldpc(obj)
+            % Function to load the custom LDPC parity check matrix with dimensions 204x102
+            % and weights (3,6), provided in the specification.
         
+            % Set matrix dimensions
+            obj.N = 204;  % Number of columns
+            obj.K = 102;  % Number of information bits
+            obj.M = obj.N - obj.K;  % Number of parity check bits
+        
+            % Initialize H matrix as zeros
+            obj.H = zeros(obj.M, obj.N);
+        
+            % Row indices for each non-zero column in H (as per the provided list)
+            column_indices = [
+                73, 84, 81; 63, 45, 26; 17, 77, 55; 74, 47, 24; 9, 10, 52; ...
+                62, 63, 44; 38, 39, 35; 60, 4, 100; 82, 98, 63; 40, 80, 68; ...
+                91, 81, 18; 86, 88, 99; 77, 71, 65; 29, 9, 33; 15, 41, 34; ...
+                75, 11, 22; 48, 24, 95; 22, 44, 60; 5, 19, 41; 31, 22, 43; ...
+                21, 18, 56; 83, 51, 49; 79, 7, 88; 36, 67, 5; 84, 75, 32; ...
+                1, 79, 38; 43, 82, 75; 2, 1, 23; 33, 61, 83; 69, 3, 30; ...
+                28, 5, 77; 8, 56, 4; 53, 76, 36; 96, 28, 102; 44, 17, 48; ...
+                92, 26, 74; 56, 69, 11; 18, 68, 50; 72, 34, 37; 25, 37, 76; ...
+                23, 30, 21; 7, 29, 40; 71, 78, 39; 13, 2, 96; 55, 33, 51; ...
+                49, 64, 16; 37, 66, 54; 50, 36, 89; 45, 15, 57; 88, 35, 15; ...
+                57, 102, 78; 98, 27, 71; 27, 52, 94; 68, 20, 87; 89, 38, 8; ...
+                24, 94, 53; 11, 50, 19; 14, 83, 98; 76, 55, 2; 41, 70, 62; ...
+                78, 86, 14; 3, 21, 59; 64, 23, 46; 47, 43, 45; 95, 31, 1; ...
+                85, 59, 84; 94, 54, 101; 93, 6, 31; 59, 95, 61; 58, 73, 47; ...
+                54, 87, 7; 52, 97, 79; 12, 90, 28; 30, 99, 97; 42, 100, 73; ...
+                101, 62, 20; 80, 96, 85; 100, 58, 91; 19, 16, 6; 99, 49, 72; ...
+                70, 92, 17; 90, 93, 69; 10, 40, 25; 39, 72, 82; 67, 74, 12; ...
+                4, 65, 27; 20, 85, 90; 102, 13, 92; 46, 8, 9; 35, 46, 10; ...
+                97, 53, 93; 66, 48, 42; 87, 89, 64; 26, 25, 58; 6, 57, 67; ...
+                65, 12, 3; 61, 91, 66; 81, 101, 29; 51, 60, 86; 16, 14, 80; ...
+                34, 32, 70; 32, 42, 13
+            ];
+        
+            % Now populate the H matrix using the provided column indices
+            for row = 1:obj.M
+                for col = 1:3
+                    % Get the column index (adjusted for 1-based indexing)
+                    col_index = column_indices(row, col);
+                    obj.H(row, col_index) = 1;
+                end
+            end
+        
+            % Efficiently compute the PCM (parity-check matrix)
+            obj.efficient_pcm();
+        end
+
         function load_wifi_ldpc(obj, block_length, rate)
 
             H_1296_1_2 = [40 -1 -1 -1 22 -1 49 23 43 -1 -1 -1 1 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1;
@@ -346,3 +397,6 @@ classdef LDPCCode < handle
     end
     
 end
+
+
+
