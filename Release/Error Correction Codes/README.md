@@ -156,7 +156,7 @@ The LDPC Parity Check Matrix used is a systematic 408*204 matrix with rate 1/2 (
 
 The averaging has been performed for upto 10000000 bits. Reference plots are also given below. 
 
-<img src="/Release/Error%20Correction%20Codes/AWGN.png" width="49%"> <img src="/Release/Error%20Correction%20Codes/AWGN_Mackay.png" width="41%">
+<img src="/Release/Error%20Correction%20Codes/AWGN.png" width="53%"> <img src="/Release/Error%20Correction%20Codes/AWGN_Mackay.png" width="41%">
 
 The plot above on the left shows the BER vs Eb/N0 plot for an AWGN channel with a rate of 0.5 and codeword length of 408. The one on the right shows the expected performance as given on **https://www.inference.org.uk/mackay/codes/**. 
 
@@ -164,7 +164,7 @@ The plot above on the left shows the BER vs Eb/N0 plot for an AWGN channel with 
 
 The plot above shows the BER vs Eb/N0 plot for a Rayleigh channel with a rate of 0.5 and codeword length of 408.
 
-<img src="/Release/Error%20Correction%20Codes/Jakes100.png" width="41%">
+<img src="/Release/Error%20Correction%20Codes/Jakes100.png" width="49%">
 
 The plot above on the left shows the BER vs Eb/N0 plot for a Jakes channel with a rate of 0.5 and codeword length of 408, with Doppler of 100 Hz and Fs = 10^6 Hz. 
 
