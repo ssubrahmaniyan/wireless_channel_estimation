@@ -168,6 +168,16 @@ The plot above shows the BER vs Eb/N0 plot for a Rayleigh channel with a rate of
 
 The plot above on the left shows the BER vs Eb/N0 plot for a Jakes channel with a rate of 0.5 and codeword length of 408, with Doppler of 100 Hz and Fs = 10^6 Hz. 
 
+Results of benchmarking LDPC performance against publicly available plots:
+
+<img src="/Release/Error%20Correction%20Codes/80211_QPSK_Final.png" width="53%"> <img src="/Release/Error%20Correction%20Codes/Reference_80211_Coded.png" width="41%">
+
+The plot above compares performance of the LDPC algorithm developed against an implementation of LDPC on **https://in.mathworks.com/help/wireless-hdl/ref/wlanldpcdecoder.html** for 4-bit QPSK. The number of iterations is 8 which is lesser than the 50 iterations I had run earlier simulations on. 
+
+<img src="/Release/Error%20Correction%20Codes/204_Mackay_LDPC.png" width="53%"> <img src="/Release/Error%20Correction%20Codes/Reference_Mackay_204.png" width="41%">
+
+Performance on BPSK with 8 iterations instead of 50. This is the number of iterations to be used going forward. 
+
 
 
 
