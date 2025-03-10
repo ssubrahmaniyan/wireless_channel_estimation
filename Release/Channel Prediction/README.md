@@ -62,8 +62,10 @@ The plot below describes the channel variation for the above mentioned parameter
 Issues faced in using alist format codes:
 1. Conversion from alist to MATLAB sparse parity check matrices is completed
 2. Since my codes run for specific block lengths, I attempted to use ldpcEncode and ldpcDecode functions from MATLAB.
-3. Performance on different combinations of Fs, Fd and parity check matrices was very poor, and on Mackay codes, an error was raised saying the dimensions of the codes are incorrect. 
-4. Need to check the format of the H matrices needed for the MATLAB defined functions. 
+3. Performance on different combinations of Fs, Fd and parity check matrices was very poor
+4. Need to check the format of the H matrices needed for the MATLAB defined functions.
+
+
 
 
 
