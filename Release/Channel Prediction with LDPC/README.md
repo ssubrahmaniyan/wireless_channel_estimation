@@ -8,6 +8,32 @@ Below is the plot for performance of an Autoregression-based channel prediction 
  <img src="/Release/Channel%20Prediction%20with%20LDPC/Uncoded_RetransmissionFreq_BER.png" width="80%">
 
  The code for reproducing the plots obtained above, as well as accessing the LDPC encoding and decoding functions for Autoregression approaches that use LDPC for FEC, can be found in the notebook LDPC_AR.ipynb
+
+## Some observations after making corrections to earlier VAR attempts
+Corrections made : 
+* I am now including the BER of data packets that satisfy the pilot retransmission condition as well (I was previously ignoring such data packets). This leads to a minor increase in the BER for the iteration.
+* An error in the Autoregression code so far is that we considered the data bits to count for errors (which is correct), but we divided by the total (data + pilot) bits transmitted to compute the BER. After fixing the error, the BER values are much higher, though the benefits of LDPC are still evident.
+
+For the below parameters:
+* Fs = 100000  # Sampling frequency
+* Fd = 1000    # Doppler frequency
+* mse_threshold = 0.1  # Threshold for MSE
+* N = 100000   # Total samples
+* ebno_db = 10     # Signal-to-noise ratio in dB (interpreted as Eb/N0 for coded system)
+* packet_size = 30  # Bits per packet
+* pilot_size = 20  # Pilot bits
+* var_order = 20  # VAR model order
+* initial_pilots = 22  # Initial pilots
+
+The outputs from 3 different approaches are:
+| Algorithm | Retransmission Frequency | BER | Total Data Bits Transmitted (out of 100000) |
+|-----------|--------------------------|-----|-------------------------------------------|
+| A. Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.954 | 0.9233 | 11070 |
+| B. Data driven (decisions based on MSE) Channel prediction with LDPC | 0.98095703125 | 0.2366943359375 | 8430 |
+| C. Data driven (decisions based on LLR) Channel prediction with LDPC | 0.97900390625 | 0.2171630859375 | 8580 |
+
+Below is also a plot of the correlation between LLRs and Bit Errors in a LDPC codeword length of 60 and code rate of 0.5 (this is the first transmitted codeword)
+<img src="/Release/Channel%20Prediction%20with%20LDPC/LLR_Error_Plot.png" width="80%">
  
 
  
