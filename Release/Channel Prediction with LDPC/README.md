@@ -27,7 +27,8 @@ For the below parameters:
 * initial_pilots = 27  # Initial pilots
 
 For investigating the effect of the block length on the LDPC performance, here is the plot for the variation of the channel for Fd = 100 Hz and Fd = 10 Hz with Fs = 100000 Hz
-<img src="/Release/Channel%20Prediction%20with%20LDPC/100Hz_Channel.png" width="48%"> <img src="/Release/Channel%20Prediction%20with%20LDPC/10Hz_Channel.png" width="51%"> 
+
+<img src="/Release/Channel%20Prediction%20with%20LDPC/100Hz_Channel.png" width="40%"> <img src="/Release/Channel%20Prediction%20with%20LDPC/10Hz_Channel.png" width="40%"> 
 
 The outputs from 3 different approaches are:
 | Algorithm | Retransmission Frequency | BER | Total Data Bits Transmitted (out of 100000) |
