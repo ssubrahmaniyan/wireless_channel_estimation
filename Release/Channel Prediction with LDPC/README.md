@@ -17,21 +17,24 @@ Corrections made :
 
 For the below parameters:
 * Fs = 100000  # Sampling frequency
-* Fd = 1000    # Doppler frequency
+* Fd = 10    # Doppler frequency
 * mse_threshold = 0.1  # Threshold for MSE
 * N = 100000   # Total samples
 * ebno_db = 10     # Signal-to-noise ratio in dB (interpreted as Eb/N0 for coded system)
-* packet_size = 30  # Bits per packet
-* pilot_size = 20  # Pilot bits
-* var_order = 20  # VAR model order
-* initial_pilots = 22  # Initial pilots
+* packet_size = 50  # Bits per packet
+* pilot_size = 50  # Pilot bits
+* var_order = 25  # VAR model order
+* initial_pilots = 27  # Initial pilots
+
+For investigating the effect of the block length on the LDPC performance, here is the plot for the variation of the channel for Fd = 100 Hz and Fd = 10 Hz with Fs = 100000 Hz
+<img src="/Release/Channel%20Prediction%20with%20LDPC/100Hz_Channel.png" width="48%"> <img src="/Release/Channel%20Prediction%20with%20LDPC/10Hz_Channel.png" width="51%"> 
 
 The outputs from 3 different approaches are:
 | Algorithm | Retransmission Frequency | BER | Total Data Bits Transmitted (out of 100000) |
 |-----------|--------------------------|-----|-------------------------------------------|
-| A. Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.954 | 0.9233 | 11070 |
-| B. Data driven (decisions based on MSE) Channel prediction with LDPC | 0.98095703125 | 0.2366943359375 | 8430 |
-| C. Data driven (decisions based on LLR) Channel prediction with LDPC | 0.97900390625 | 0.2171630859375 | 8580 |
+| Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.014496 | 0.01555 | 98600 |
+| Data driven (decisions based on LLR) Channel Prediction with Autoregression with  LDPC | 0.253173828125 | 0.057342529296875 | 42750 |
+| Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.318115234375 | 0.03144929296875 | 32190 |
 
 
 Below is also a plot of the correlation between LLRs and Bit Errors in a LDPC codeword length of 60 and code rate of 0.5 (this is the first transmitted codeword)
