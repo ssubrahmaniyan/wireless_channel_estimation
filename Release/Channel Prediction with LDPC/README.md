@@ -35,7 +35,7 @@ The outputs from 3 different approaches are:
 |-----------|--------------------------|-----|-------------------------------------------|
 | Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.014496 | 0.01555 | 98600 |
 | Data driven (decisions based on LLR) Channel Prediction with Autoregression with  LDPC | 0.253173828125 | 0.057342529296875 | 42750 |
-| Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.318115234375 | 0.03144929296875 | 32190 |
+| Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.19091796875 | 0.0243682861328125 | 34750 |
 
 
 Below is also a plot of the correlation between LLRs and Bit Errors in a LDPC codeword length of 60 and code rate of 0.5 (this is the first transmitted codeword)
