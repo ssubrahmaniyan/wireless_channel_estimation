@@ -44,15 +44,15 @@ Below is also a plot of the correlation between LLRs and Bit Errors in a LDPC co
 
 ************************************************************************************************************************************************************************************************
 For the below parameters:
-Fs = 1200000  # Sampling frequency
-Fd = 20    # Doppler frequency
-mse_threshold = 0.1  # Threshold for MSE
-N = 100000   # Total samples
-ebno_db = 10     # Signal-to-noise ratio in dB (interpreted as Eb/N0 for coded system)
-packet_size = 50  # Bits per packet
-pilot_size = 50  # Pilot bits - only in the case without LDPC
-var_order = 25  # VAR model order
-initial_pilots = 27  # Initial pilots
+* Fs = 1200000  # Sampling frequency
+* Fd = 20    # Doppler frequency
+* mse_threshold = 0.1  # Threshold for MSE
+* N = 100000   # Total samples
+* ebno_db = 10     # Signal-to-noise ratio in dB (interpreted as Eb/N0 for coded system)
+* packet_size = 50  # Bits per packet
+* pilot_size = 50  # Pilot bits - only in the case without LDPC
+* var_order = 25  # VAR model order
+* initial_pilots = 27  # Initial pilots
 
 The following changes have been implemented for the 3 simulations reported in the table below:
 1. initial_pilots number of pilots are transmitted each time the MSE crosses the threshold or the LLR threshold is crossed (i.e. the condition for retransmission)
