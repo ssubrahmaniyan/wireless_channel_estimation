@@ -41,6 +41,32 @@ The outputs from 3 different approaches are:
 Below is also a plot of the correlation between LLRs and Bit Errors in a LDPC codeword length of 60 and code rate of 0.5 (this is the first transmitted codeword)
 
 <img src="/Release/Channel%20Prediction%20with%20LDPC/LLR_Error_Plot.png" width="80%">
- 
+
+************************************************************************************************************************************************************************************************
+For the below parameters:
+Fs = 1200000  # Sampling frequency
+Fd = 20    # Doppler frequency
+mse_threshold = 0.1  # Threshold for MSE
+N = 100000   # Total samples
+ebno_db = 10     # Signal-to-noise ratio in dB (interpreted as Eb/N0 for coded system)
+packet_size = 50  # Bits per packet
+pilot_size = 50  # Pilot bits - only in the case without LDPC
+var_order = 25  # VAR model order
+initial_pilots = 27  # Initial pilots
+
+The following changes have been implemented for the 3 simulations reported in the table below:
+1. initial_pilots number of pilots are transmitted each time the MSE crosses the threshold or the LLR threshold is crossed (i.e. the condition for retransmission)
+2. The predicted channel is not used as is, but is now averaged with the last initial_pilots number of channel values, which were used by VAR to predict it
+3. The LDPC codeword length has now been increased to 2100 from 100 and the fraction of LLRs that can go out of the set cutoff is updated to 0.05 to obtain better error correction. 
+
+The outputs from 3 different approaches are:
+| Algorithm | Retransmission Frequency | BER | Total Data Bits Transmitted (out of 100000) |
+|-----------|--------------------------|-----|-------------------------------------------|
+| Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.1746 | 0.005722 | 83000 |
+| Data driven (decisions based on LLR) Channel Prediction with Autoregression with LDPC | 0.283447265625 | 0.0054473876953125 | 40950 |
+| Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.266845703125 | 0.0047607421875 | 40950 | 
+
+
+Can explore multiple channel values being predicted for a single LDPC block-length - this ablation study is subsequently performed
 
  
