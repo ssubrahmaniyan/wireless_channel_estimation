@@ -67,6 +67,26 @@ The outputs from 3 different approaches are:
 | Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.266845703125 | 0.0047607421875 | 40950 | 
 
 
-Can explore multiple channel values being predicted for a single LDPC block-length - this ablation study is subsequently performed
+************************************************************************************************************************************************************************************************
+### Bitwise prediction of channel values and evaluation
+For the below parameters:
+* Fs = 1200000  # Sampling frequency
+* Fd = 20    # Doppler frequency
+* mse_threshold = 0.01  # Threshold for MSE
+* N = 100000   # Total samples
+* ebno_db = 10     # Signal-to-noise ratio in dB (interpreted as Eb/N0 for coded system)
+* packet_size = 50  # Bits per packet
+* pilot_size = 50  # Pilot bits - only in the case without LDPC
+* var_order = 25  # VAR model order
+* initial_pilots = 27  # Initial pilots
 
+
+The outputs from 3 different approaches are:
+| Algorithm | Retransmission Frequency | BER | Total Data Bits Transmitted (out of 100000) |
+|-----------|--------------------------|-----|-------------------------------------------|
+| Bitwise Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.05148 | 0.005165 | 99500 |
+| Bitwise Data driven (decisions based on LLR) Channel Prediction with Autoregression with LDPC | 0.283447265625 | 0.049607421875 | 40950 |
+| Bitwise Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.126708984375 | 0.047607421875 | 45150 | 
+
+Clearly the bitwise versions of each algorithm perform better than the packetwise versions. 
  
