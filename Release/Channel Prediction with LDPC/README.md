@@ -70,7 +70,8 @@ The outputs from 3 different approaches are:
 
 
 Attached below are plots of the LLR magnitudes based on which a decision was made, and the BER vs Doppler frequency plot for the LDPC (without CRC) coded AR transmission. 
-<img src="/Release/Channel%20Prediction%20with%20LDPC/LLR_Plot.png" width="40%"> <img src="/Release/Channel%20Prediction%20with%20LDPC/BER_vs_Doppler_P1.png" width="40%"> 
+
+<img src="/Release/Channel%20Prediction%20with%20LDPC/LLR_Plot.png" width="45%"> <img src="/Release/Channel%20Prediction%20with%20LDPC/BER_vs_Doppler_P1.png" width="45%"> 
 
 ************************************************************************************************************************************************************************************************
 
