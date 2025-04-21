@@ -66,7 +66,7 @@ The outputs from 3 different approaches are:
 |-----------|--------------------------|-----|-------------------------------------------|
 | Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.4695 | 0.0002295 | 61000 |
 | Data driven (decisions based on LLR) Channel Prediction with Autoregression with LDPC | 0.23889 | 0.0000365 | 43000 |
-| Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.266845703125 | 0.000021875 | 40950 | 
+| Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.2668 | 0.000021875 | 40950 | 
 
 
 Attached below are plots of the LLR magnitudes based on which a decision was made, and the BER vs Doppler frequency plot for the LDPC (without CRC) coded AR transmission. 
