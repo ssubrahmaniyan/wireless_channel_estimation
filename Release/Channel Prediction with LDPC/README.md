@@ -44,49 +44,34 @@ Below is also a plot of the correlation between LLRs and Bit Errors in a LDPC co
 
 ************************************************************************************************************************************************************************************************
 For the below parameters:
-* Fs = 1200000  # Sampling frequency
-* Fd = 20    # Doppler frequency
+* Fs = 1000000  # Sampling frequency
+* Fd = 10    # Doppler frequency
 * mse_threshold = 0.1  # Threshold for MSE
-* N = 100000   # Total samples
+* N = 1000000   # Total samples
 * ebno_db = 10     # Signal-to-noise ratio in dB (interpreted as Eb/N0 for coded system)
-* packet_size = 50  # Bits per packet
-* pilot_size = 50  # Pilot bits - only in the case without LDPC
-* var_order = 25  # VAR model order
+* packet_size = 500  # Bits per packet
+* pilot_size = 500  # Pilot bits #around packet size, ar 15, Fs 1000000, Fd 20, 10^6 * 100, 
+* var_order = 15  # VAR model order
 * initial_pilots = 27  # Initial pilots
 
 The following changes have been implemented for the 3 simulations reported in the table below:
-1. initial_pilots number of pilots are transmitted each time the MSE crosses the threshold or the LLR threshold is crossed (i.e. the condition for retransmission)
-2. The predicted channel is not used as is, but is now averaged with the last initial_pilots number of channel values, which were used by VAR to predict it
-3. The LDPC codeword length has now been increased to 2100 from 100 and the fraction of LLRs that can go out of the set cutoff is updated to 0.05 to obtain better error correction. 
+1. The Sum of Sinusoids method is now being used for generating the channel
+2. The simulations are averaged 10 times and run for N = 100000 samples
+3. The LLR cutoff is set to 12 and the cutoff frequency is set to 0.4
+4. The VAR order has been reduced and the pilot size is now comparable to the size of the packet for which the channel is predicted. 
+
 
 The outputs from 3 different approaches are:
 | Algorithm | Retransmission Frequency | BER | Total Data Bits Transmitted (out of 100000) |
 |-----------|--------------------------|-----|-------------------------------------------|
-| Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.1746 | 0.005722 | 83000 |
-| Data driven (decisions based on LLR) Channel Prediction with Autoregression with LDPC | 0.283447265625 | 0.0054473876953125 | 40950 |
-| Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.266845703125 | 0.0047607421875 | 40950 | 
+| Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.4695 | 0.0002295 | 61000 |
+| Data driven (decisions based on LLR) Channel Prediction with Autoregression with LDPC | 0.23889 | 0.0000365 | 43000 |
+| Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.266845703125 | 0.000021875 | 40950 | 
 
+
+Attached below are plots of the LLR magnitudes based on which a decision was made, and the BER vs Doppler frequency plot for the LDPC (without CRC) coded AR transmission. 
+<img src="/Release/Channel%20Prediction%20with%20LDPC/LLR_Plot.png" width="40%"> <img src="/Release/Channel%20Prediction%20with%20LDPC/BER_vs_Doppler_P1.png" width="40%"> 
 
 ************************************************************************************************************************************************************************************************
-### Bitwise prediction of channel values and evaluation
-For the below parameters:
-* Fs = 1200000  # Sampling frequency
-* Fd = 20    # Doppler frequency
-* mse_threshold = 0.01  # Threshold for MSE
-* N = 100000   # Total samples
-* ebno_db = 10     # Signal-to-noise ratio in dB (interpreted as Eb/N0 for coded system)
-* packet_size = 50  # Bits per packet
-* pilot_size = 50  # Pilot bits - only in the case without LDPC
-* var_order = 25  # VAR model order
-* initial_pilots = 27  # Initial pilots
 
-
-The outputs from 3 different approaches are:
-| Algorithm | Retransmission Frequency | BER | Total Data Bits Transmitted (out of 100000) |
-|-----------|--------------------------|-----|-------------------------------------------|
-| Bitwise Data Driven (decisions based on MSE) Channel Prediction with Autoregression without LDPC | 0.05148 | 0.005165 | 99500 |
-| Bitwise Data driven (decisions based on LLR) Channel Prediction with Autoregression with LDPC | 0.283447265625 | 0.049607421875 | 40950 |
-| Bitwise Data driven (decisions based on LLR with CRC checks) Channel Prediction with Autoregression with LDPC | 0.126708984375 | 0.047607421875 | 45150 | 
-
-Clearly the bitwise versions of each algorithm perform better than the packetwise versions. 
  
