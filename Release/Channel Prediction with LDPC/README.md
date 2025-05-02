@@ -101,5 +101,5 @@ The outputs from 2 different approaches for Fd = 100 Hz are:
 
 Attached below are plots of the BER vs Doppler Frequency plots for the BER and BLER simulation detailed above, respectively
 
-<img src="/Release/Channel%20Prediction%20with%20LDPC/BER_Plot_LDPC.png" width="45%"> <img src="/Release/Channel%20Prediction%20with%20LDPC/BLER_Plot_LDPC.png" width="45%"> 
+<img src="/Release/Channel%20Prediction%20with%20LDPC/BER_plot_LDPC.png" width="45%"> <img src="/Release/Channel%20Prediction%20with%20LDPC/BLER_plot_LDPC.png" width="45%"> 
  
