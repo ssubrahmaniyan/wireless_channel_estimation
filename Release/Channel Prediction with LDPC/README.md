@@ -75,4 +75,31 @@ Attached below are plots of the LLR magnitudes based on which a decision was mad
 
 ************************************************************************************************************************************************************************************************
 
+ Block Error Rates (BLER) are now used in the transmission simulation. Each LDPC block with CRC bits sent is considered as a block, and CRC is used to verify if the block has been received correctly or not. The number of wrong blocks received gives us the BLER. 
+
+For the below parameters:
+* Fs = 1000000  Hz # Sampling frequency
+* Fd = 0 to 200 Hz # Doppler frequency
+* N = 1000000   # Total samples
+* ebno_db = 10     # Signal-to-noise ratio in dB (interpreted as Eb/N0 for coded system)
+* packet_size = 500  # Bits per packet
+* pilot_size = 500  # Pilot bits #around packet size, ar 15, Fs 1000000, Fd 20, 10^6 * 100, 
+* var_order = 15  # VAR model order
+* initial_pilots = 27  # Initial pilots
+
+The outputs from 2 different approaches for Fd = 200 Hz are:
+| Algorithm | Retransmission Frequency | BER | Total Data Bits Transmitted (out of 100000) |
+|-----------|--------------------------|-----|-------------------------------------------|
+| Transmission with perfect CSI and LDPC FEC | 0.4695 | 0.0002295 | 61000 |
+| Data driven (decisions based on LLR) Channel Prediction with Autoregression using LDPC | 0.23889 | 0.0000365 | 43000 |
+
+The outputs from 2 different approaches for Fd = 200 Hz are:
+| Algorithm | Retransmission Frequency | BLER | Total Data Bits Transmitted (out of 100000) |
+|-----------|--------------------------|-----|-------------------------------------------|
+| Transmission with perfect CSI and LDPC FEC (BLER) | 0.4695 | 0.0002295 | 61000 |
+| Data driven (decisions based on CRC checks) Channel Prediction with Autoregression using LDPC (BLER) | 0.2668 | 0.000021875 | 40950 | 
+
+Attached below are plots of the BER vs Doppler Frequency plots for the BER and BLER simulation detailed above, respectively
+
+<img src="/Release/Channel%20Prediction%20with%20LDPC/BER_Plot_LDPC.png" width="45%"> <img src="/Release/Channel%20Prediction%20with%20LDPC/BLER_Plot_LDPC.png" width="45%"> 
  
